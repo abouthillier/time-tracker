@@ -1,0 +1,1101 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "svelte.config.js",
+      "file_type": "code",
+      "source_file": "svelte.config.js",
+      "source_location": "L1",
+      "id": "svelte_config_js",
+      "community": 10,
+      "norm_label": "svelte.config.js"
+    },
+    {
+      "label": "vite.config.ts",
+      "file_type": "code",
+      "source_file": "vite.config.ts",
+      "source_location": "L1",
+      "id": "vite_config_ts",
+      "community": 11,
+      "norm_label": "vite.config.ts"
+    },
+    {
+      "label": "App.svelte",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L1",
+      "id": "src_app_svelte",
+      "community": 2,
+      "norm_label": "app.svelte"
+    },
+    {
+      "label": "submitEntry()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L55",
+      "id": "src_app_submitentry",
+      "community": 5,
+      "norm_label": "submitentry()"
+    },
+    {
+      "label": "deleteEntry()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L107",
+      "id": "src_app_deleteentry",
+      "community": 5,
+      "norm_label": "deleteentry()"
+    },
+    {
+      "label": "editEntry()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L118",
+      "id": "src_app_editentry",
+      "community": 2,
+      "norm_label": "editentry()"
+    },
+    {
+      "label": "resetForm()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L128",
+      "id": "src_app_resetform",
+      "community": 7,
+      "norm_label": "resetform()"
+    },
+    {
+      "label": "moveDay()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L135",
+      "id": "src_app_moveday",
+      "community": 7,
+      "norm_label": "moveday()"
+    },
+    {
+      "label": "jumpToToday()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L144",
+      "id": "src_app_jumptotoday",
+      "community": 7,
+      "norm_label": "jumptotoday()"
+    },
+    {
+      "label": "persist()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L153",
+      "id": "src_app_persist",
+      "community": 5,
+      "norm_label": "persist()"
+    },
+    {
+      "label": "applyDefaultTimes()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L169",
+      "id": "src_app_applydefaulttimes",
+      "community": 2,
+      "norm_label": "applydefaulttimes()"
+    },
+    {
+      "label": "getDefaultStartTime()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L176",
+      "id": "src_app_getdefaultstarttime",
+      "community": 2,
+      "norm_label": "getdefaultstarttime()"
+    },
+    {
+      "label": "addMinutesToTime()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L187",
+      "id": "src_app_addminutestotime",
+      "community": 2,
+      "norm_label": "addminutestotime()"
+    },
+    {
+      "label": "./lib/timeEntries",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries",
+      "confidence": "EXTRACTED",
+      "id": "c_users_alexb_dev_time_tracker_src_lib_timeentries",
+      "community": 2,
+      "norm_label": "./lib/timeentries"
+    },
+    {
+      "label": "@lucide/svelte",
+      "file_type": "code",
+      "source_file": "@lucide/svelte",
+      "confidence": "EXTRACTED",
+      "id": "svelte",
+      "community": 8,
+      "norm_label": "@lucide/svelte"
+    },
+    {
+      "label": "main.ts",
+      "file_type": "code",
+      "source_file": "src/main.ts",
+      "source_location": "L1",
+      "id": "src_main_ts",
+      "community": 8,
+      "norm_label": "main.ts"
+    },
+    {
+      "label": "app",
+      "file_type": "code",
+      "source_file": "src/main.ts",
+      "source_location": "L5",
+      "id": "src_main_app",
+      "community": 8,
+      "norm_label": "app"
+    },
+    {
+      "label": "Counter.svelte",
+      "file_type": "code",
+      "source_file": "src/lib/Counter.svelte",
+      "source_location": "L1",
+      "id": "src_lib_counter_svelte",
+      "community": 12,
+      "norm_label": "counter.svelte"
+    },
+    {
+      "label": "timeEntries.ts",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L1",
+      "id": "src_lib_timeentries_ts",
+      "community": 1,
+      "norm_label": "timeentries.ts"
+    },
+    {
+      "label": "TimeEntry",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L3",
+      "id": "lib_timeentries_timeentry",
+      "community": 1,
+      "norm_label": "timeentry"
+    },
+    {
+      "label": "EntryDraft",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L12",
+      "id": "lib_timeentries_entrydraft",
+      "community": 1,
+      "norm_label": "entrydraft"
+    },
+    {
+      "label": "todayKey()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L14",
+      "id": "lib_timeentries_todaykey",
+      "community": 6,
+      "norm_label": "todaykey()"
+    },
+    {
+      "label": "dateToKey()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L16",
+      "id": "lib_timeentries_datetokey",
+      "community": 6,
+      "norm_label": "datetokey()"
+    },
+    {
+      "label": "shiftDateKey()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L24",
+      "id": "lib_timeentries_shiftdatekey",
+      "community": 6,
+      "norm_label": "shiftdatekey()"
+    },
+    {
+      "label": "formatDateLabel()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L32",
+      "id": "lib_timeentries_formatdatelabel",
+      "community": 1,
+      "norm_label": "formatdatelabel()"
+    },
+    {
+      "label": "minutesBetween()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L44",
+      "id": "lib_timeentries_minutesbetween",
+      "community": 4,
+      "norm_label": "minutesbetween()"
+    },
+    {
+      "label": "formatMinutes()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L51",
+      "id": "lib_timeentries_formatminutes",
+      "community": 1,
+      "norm_label": "formatminutes()"
+    },
+    {
+      "label": "entryDuration()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L61",
+      "id": "lib_timeentries_entryduration",
+      "community": 4,
+      "norm_label": "entryduration()"
+    },
+    {
+      "label": "totalMinutesForDay()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L64",
+      "id": "lib_timeentries_totalminutesforday",
+      "community": 1,
+      "norm_label": "totalminutesforday()"
+    },
+    {
+      "label": "loadEntries()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L69",
+      "id": "lib_timeentries_loadentries",
+      "community": 1,
+      "norm_label": "loadentries()"
+    },
+    {
+      "label": "saveEntries()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L71",
+      "id": "lib_timeentries_saveentries",
+      "community": 5,
+      "norm_label": "saveentries()"
+    },
+    {
+      "label": "timeToMinutes()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L74",
+      "id": "lib_timeentries_timetominutes",
+      "community": 4,
+      "norm_label": "timetominutes()"
+    },
+    {
+      "label": "build.rs",
+      "file_type": "code",
+      "source_file": "src-tauri/build.rs",
+      "source_location": "L1",
+      "id": "src_tauri_build_rs",
+      "community": 9,
+      "norm_label": "build.rs"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "src-tauri/build.rs",
+      "source_location": "L1",
+      "id": "src_tauri_build_main",
+      "community": 9,
+      "norm_label": "main()"
+    },
+    {
+      "label": "lib.rs",
+      "file_type": "code",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L1",
+      "id": "src_tauri_src_lib_rs",
+      "community": 0,
+      "norm_label": "lib.rs"
+    },
+    {
+      "label": "TimeEntry",
+      "file_type": "code",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L8",
+      "id": "src_lib_timeentry",
+      "community": 0,
+      "norm_label": "timeentry"
+    },
+    {
+      "label": "load_entries()",
+      "file_type": "code",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L18",
+      "id": "src_lib_load_entries",
+      "community": 0,
+      "norm_label": "load_entries()"
+    },
+    {
+      "label": "save_entries()",
+      "file_type": "code",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L35",
+      "id": "src_lib_save_entries",
+      "community": 0,
+      "norm_label": "save_entries()"
+    },
+    {
+      "label": "entries_path()",
+      "file_type": "code",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L42",
+      "id": "src_lib_entries_path",
+      "community": 0,
+      "norm_label": "entries_path()"
+    },
+    {
+      "label": "run()",
+      "file_type": "code",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L54",
+      "id": "src_lib_run",
+      "community": 0,
+      "norm_label": "run()"
+    },
+    {
+      "label": "main.rs",
+      "file_type": "code",
+      "source_file": "src-tauri/src/main.rs",
+      "source_location": "L1",
+      "id": "src_tauri_src_main_rs",
+      "community": 0,
+      "norm_label": "main.rs"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "src-tauri/src/main.rs",
+      "source_location": "L4",
+      "id": "src_main_main",
+      "community": 0,
+      "norm_label": "main()"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "readme_md",
+      "community": 3,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "Svelte + TS + Vite",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "time_tracker_readme_svelte_ts_vite",
+      "community": 3,
+      "norm_label": "svelte + ts + vite"
+    },
+    {
+      "label": "Recommended IDE Setup",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L5",
+      "id": "time_tracker_readme_recommended_ide_setup",
+      "community": 3,
+      "norm_label": "recommended ide setup"
+    },
+    {
+      "label": "Need an official Svelte framework?",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L9",
+      "id": "time_tracker_readme_need_an_official_svelte_framework",
+      "community": 3,
+      "norm_label": "need an official svelte framework?"
+    },
+    {
+      "label": "Technical considerations",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L13",
+      "id": "time_tracker_readme_technical_considerations",
+      "community": 3,
+      "norm_label": "technical considerations"
+    },
+    {
+      "label": "code:ts (// store.ts)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L42",
+      "id": "time_tracker_readme_codeblock_1",
+      "community": 3,
+      "norm_label": "code:ts (// store.ts)"
+    },
+    {
+      "label": "addEntry()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L42",
+      "community": 4,
+      "norm_label": "addentry()",
+      "id": "src_app_addentry"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L45",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_submitentry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L81",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_deleteentry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L106",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_editentry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L116",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_resetform"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L86",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_moveday"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L91",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_jumptotoday"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L139",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_persist"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L167",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_applydefaulttimes"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L174",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_getdefaultstarttime"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L185",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_addminutestotime"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "c_users_alexb_dev_time_tracker_src_lib_timeentries"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "svelte"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/main.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_main_ts",
+      "target": "src_app_svelte"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L42",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_addentry"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L97",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_submitentry",
+      "target": "src_app_persist"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L94",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_submitentry",
+      "target": "src_app_resetform"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.svelte",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "src_app_submitentry",
+      "target": "lib_timeentries_minutesbetween"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_deleteentry",
+      "target": "src_app_persist"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L102",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_deleteentry",
+      "target": "src_app_resetform"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L114",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_deleteentry",
+      "target": "src_app_applydefaulttimes"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L129",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_resetform",
+      "target": "src_app_applydefaulttimes"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L138",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_moveday",
+      "target": "src_app_resetform"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L147",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_jumptotoday",
+      "target": "src_app_resetform"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.svelte",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "src_app_moveday",
+      "target": "lib_timeentries_shiftdatekey"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.svelte",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "src_app_jumptotoday",
+      "target": "lib_timeentries_todaykey"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.svelte",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "src_app_persist",
+      "target": "lib_timeentries_saveentries"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L168",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_applydefaulttimes",
+      "target": "src_app_getdefaultstarttime"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L171",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_applydefaulttimes",
+      "target": "src_app_addminutestotime"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/main.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_main_ts",
+      "target": "svelte"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/main.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_main_ts",
+      "target": "src_main_app"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_timeentry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_entrydraft"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_todaykey"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_datetokey"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_shiftdatekey"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_formatdatelabel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L44",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_minutesbetween"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L51",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_formatminutes"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_entryduration"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_totalminutesforday"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L69",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_loadentries"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L71",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_saveentries"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L74",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_timetominutes"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_timeentries_todaykey",
+      "target": "lib_timeentries_datetokey"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_timeentries_shiftdatekey",
+      "target": "lib_timeentries_datetokey"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_timeentries_minutesbetween",
+      "target": "lib_timeentries_timetominutes"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_timeentries_entryduration",
+      "target": "lib_timeentries_minutesbetween"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.svelte",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "src_app_addentry",
+      "target": "lib_timeentries_minutesbetween"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/build.rs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_build_rs",
+      "target": "src_tauri_build_main"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_src_lib_rs",
+      "target": "src_lib_timeentry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_src_lib_rs",
+      "target": "src_lib_load_entries"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_src_lib_rs",
+      "target": "src_lib_save_entries"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L42",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_src_lib_rs",
+      "target": "src_lib_entries_path"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L54",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_src_lib_rs",
+      "target": "src_lib_run"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_load_entries",
+      "target": "src_lib_entries_path"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_save_entries",
+      "target": "src_lib_entries_path"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src-tauri/src/main.rs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_main_main",
+      "target": "src_lib_run"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/main.rs",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_src_main_rs",
+      "target": "src_main_main"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "readme_md",
+      "target": "time_tracker_readme_svelte_ts_vite"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "time_tracker_readme_svelte_ts_vite",
+      "target": "time_tracker_readme_recommended_ide_setup"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "time_tracker_readme_svelte_ts_vite",
+      "target": "time_tracker_readme_need_an_official_svelte_framework"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "time_tracker_readme_svelte_ts_vite",
+      "target": "time_tracker_readme_technical_considerations"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "time_tracker_readme_technical_considerations",
+      "target": "time_tracker_readme_codeblock_1"
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,262 @@
+{
+  "C:\\Users\\alexb\\dev\\time-tracker\\svelte.config.js": {
+    "mtime": 1782390530.7829638,
+    "hash": "c75647575a823f80e9d2e5e8bfb8c8bc"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\vite.config.ts": {
+    "mtime": 1782763236.480622,
+    "hash": "6779ae67d91ea1f7cd4336edd1c12c31"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\App.svelte": {
+    "mtime": 1782763236.480622,
+    "hash": "028676e7f36ca7be60c61af5c257d968"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\main.ts": {
+    "mtime": 1782763236.4821265,
+    "hash": "205501b6b50c46e655ecdb69ec57f760"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\Counter.svelte": {
+    "mtime": 1782390530.8500085,
+    "hash": "017edcf14363a115e5588eeec8a9a0d2"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\timeEntries.ts": {
+    "mtime": 1782763236.4811225,
+    "hash": "ce228a8f81c3ac4d9455b47d7c17b2da"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\build.rs": {
+    "mtime": 1782392628.7562735,
+    "hash": "1be34a5c61c2c35365de3dab14298f0b"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\lib.rs": {
+    "mtime": 1782763236.4811225,
+    "hash": "775d9469405ea6ff2bdb17244b0029a2"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\main.rs": {
+    "mtime": 1782392628.762398,
+    "hash": "c606fa15ae831a39cb2310dde4d4fa4c"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\index.html": {
+    "mtime": 1782390531.0698714,
+    "hash": "7a78cc9f2af4c597e6ea206bc414e930"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\README.md": {
+    "mtime": 1782390530.8246794,
+    "hash": "eb84709a4900985d89598dd3e2c25728"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\public\\app-icon.svg": {
+    "mtime": 1782763236.4821265,
+    "hash": "a3a55df8c18a06879533cdccc12cc7e8"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\public\\favicon.svg": {
+    "mtime": 1782390530.8610125,
+    "hash": "7e840862161341271697daa99a40d76b"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\public\\icons.svg": {
+    "mtime": 1782390530.8759432,
+    "hash": "3b4fcfcf393eca4d264dca4a4663bc37"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\assets\\hero.png": {
+    "mtime": 1782390530.8406804,
+    "hash": "aead493361b27e7510691c5d7072dfc1"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\assets\\svelte.svg": {
+    "mtime": 1782390530.8932455,
+    "hash": "bf6f61806de2953fe8dfce3cf8040ec3"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\assets\\vite.svg": {
+    "mtime": 1782390530.9072306,
+    "hash": "9960a24288958394ac50e57ff638b036"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\128x128.png": {
+    "mtime": 1782392459.804609,
+    "hash": "141eb6d8653c4fadbe4dfed11e80858d"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\128x128@2x.png": {
+    "mtime": 1782392459.814164,
+    "hash": "d76dc0f58f1586921c025a62d999dfce"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\32x32.png": {
+    "mtime": 1782392459.7978387,
+    "hash": "b9b034604b4427b00d0900db339e2777"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\64x64.png": {
+    "mtime": 1782392459.8006103,
+    "hash": "4984804ef7305331957e5c50cbd418f9"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\icon.png": {
+    "mtime": 1782392459.8391132,
+    "hash": "0e9cc80968966c297fd255b4836dfb1e"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square107x107Logo.png": {
+    "mtime": 1782392459.5907211,
+    "hash": "61ccf8d8942217ef439fef8b52b10ec8"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square142x142Logo.png": {
+    "mtime": 1782392459.5952208,
+    "hash": "751858dd22cab4918a62277f91403e1d"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square150x150Logo.png": {
+    "mtime": 1782392459.6002347,
+    "hash": "bf3d0c6c354c295d21ffbcfab3209d84"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square284x284Logo.png": {
+    "mtime": 1782392459.610742,
+    "hash": "0b8ce90590ba911cb02067ed7e69e782"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square30x30Logo.png": {
+    "mtime": 1782392459.581215,
+    "hash": "41bfe4d194dc93b5109de424954afc58"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square310x310Logo.png": {
+    "mtime": 1782392459.623052,
+    "hash": "89710626f760729e838ab77e43de72cf"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square44x44Logo.png": {
+    "mtime": 1782392459.582221,
+    "hash": "4f7f8e1c95479c74edc58918d3739451"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square71x71Logo.png": {
+    "mtime": 1782392459.584719,
+    "hash": "73f7fe19abd4bf7a581028c15b362a8c"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\Square89x89Logo.png": {
+    "mtime": 1782392459.5882215,
+    "hash": "d1aae5ecddbdfed75558392adc3ad883"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\StoreLogo.png": {
+    "mtime": 1782392459.5797172,
+    "hash": "82008450060b936bf4f950ec98304ab9"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-hdpi\\ic_launcher.png": {
+    "mtime": 1782392460.0161588,
+    "hash": "9785344b47d838d1fc096e87882fcb02"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-hdpi\\ic_launcher_foreground.png": {
+    "mtime": 1782392459.9692705,
+    "hash": "2914e44d52ed6673eedaa45a3eb37107"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-hdpi\\ic_launcher_round.png": {
+    "mtime": 1782392460.014655,
+    "hash": "a40735050509bfa60fd1fff4e90231f1"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-mdpi\\ic_launcher.png": {
+    "mtime": 1782392460.0202708,
+    "hash": "729330b81a684edbf9db95477f68a4ab"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-mdpi\\ic_launcher_foreground.png": {
+    "mtime": 1782392459.972778,
+    "hash": "fab8299aec7ef4d969e20153fcb3ca0d"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-mdpi\\ic_launcher_round.png": {
+    "mtime": 1782392460.0181665,
+    "hash": "d42d0d5517470274aed57d868a9a75e1"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xhdpi\\ic_launcher.png": {
+    "mtime": 1782392460.0252705,
+    "hash": "1ab92e21870f4921c6e47be0b090bbee"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xhdpi\\ic_launcher_foreground.png": {
+    "mtime": 1782392459.9797668,
+    "hash": "60900149b898c458340fabdd6d0692aa"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xhdpi\\ic_launcher_round.png": {
+    "mtime": 1782392460.0222692,
+    "hash": "42cfd9dc2190dc5118d621a0fd0ca946"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xxhdpi\\ic_launcher.png": {
+    "mtime": 1782392460.0344524,
+    "hash": "66fb5909527f7a2790ab06e54c7b8841"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xxhdpi\\ic_launcher_foreground.png": {
+    "mtime": 1782392459.9930718,
+    "hash": "851b7ceb3ac0f6d5141be94df34028eb"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xxhdpi\\ic_launcher_round.png": {
+    "mtime": 1782392460.0292811,
+    "hash": "8263520349709f064eb092b75da9d081"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xxxhdpi\\ic_launcher.png": {
+    "mtime": 1782392460.047082,
+    "hash": "1bf30f291b808fa9a45f8d9c6dd49377"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xxxhdpi\\ic_launcher_foreground.png": {
+    "mtime": 1782392460.0131726,
+    "hash": "b0a4a3cf839cee680a6ae83c0e5e3b90"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\android\\mipmap-xxxhdpi\\ic_launcher_round.png": {
+    "mtime": 1782392460.0409515,
+    "hash": "d3a0f064332f14b2a0d2e951c0da6b46"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-20x20@1x.png": {
+    "mtime": 1782392459.8416138,
+    "hash": "ce284af6ecb385dad5d85ae4a2ffcbcf"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-20x20@2x-1.png": {
+    "mtime": 1782392459.840617,
+    "hash": "dcb2e13c5a07f30d810c590f9d548107"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-20x20@2x.png": {
+    "mtime": 1782392459.8431137,
+    "hash": "dcb2e13c5a07f30d810c590f9d548107"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-20x20@3x.png": {
+    "mtime": 1782392459.844613,
+    "hash": "22735058652057eb09017b5d90e9e3c3"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-29x29@1x.png": {
+    "mtime": 1782392459.8476331,
+    "hash": "e7c937790094ae6fb2333eb76403442c"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-29x29@2x-1.png": {
+    "mtime": 1782392459.8461175,
+    "hash": "20fb7bc953d6d17e7d1ef11c3542e76e"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-29x29@2x.png": {
+    "mtime": 1782392459.8496363,
+    "hash": "20fb7bc953d6d17e7d1ef11c3542e76e"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-29x29@3x.png": {
+    "mtime": 1782392459.8526385,
+    "hash": "95927fdf63cbad1625788b43b095c5f6"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-40x40@1x.png": {
+    "mtime": 1782392459.855636,
+    "hash": "dcb2e13c5a07f30d810c590f9d548107"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-40x40@2x-1.png": {
+    "mtime": 1782392459.8546374,
+    "hash": "f30878d831e66b659f461512def08f8d"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-40x40@2x.png": {
+    "mtime": 1782392459.8581443,
+    "hash": "f30878d831e66b659f461512def08f8d"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-40x40@3x.png": {
+    "mtime": 1782392459.8611424,
+    "hash": "45e7daba32bdecf1ff570d0e72e1cc0f"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-512@2x.png": {
+    "mtime": 1782392459.9622574,
+    "hash": "a84a0a13d8e766fc31bf70fa5da53213"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-60x60@2x.png": {
+    "mtime": 1782392459.8646433,
+    "hash": "45e7daba32bdecf1ff570d0e72e1cc0f"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-60x60@3x.png": {
+    "mtime": 1782392459.8701649,
+    "hash": "065d0f5c9b95e443433a785e4e547c4e"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-76x76@1x.png": {
+    "mtime": 1782392459.8726654,
+    "hash": "4becd482d8568cc1a0282cb9c9a62909"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-76x76@2x.png": {
+    "mtime": 1782392459.8766677,
+    "hash": "31fbc7724148f2429825cceffeb74a94"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\icons\\ios\\AppIcon-83.5x83.5@2x.png": {
+    "mtime": 1782392459.8816648,
+    "hash": "74b0b862ef919d2a6bc9bbca934c55d0"
+  }
+}
