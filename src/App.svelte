@@ -1,9 +1,6 @@
 <script lang="ts">
   import {
     earliestEntryStart,
-    entryDuration,
-    formatDateLabel,
-    formatMinutes,
     latestEntryEnd,
     loadEntries,
     minutesBetween,
@@ -15,7 +12,49 @@
     type TimeSlot,
   } from "./lib/timeEntries";
 
-  import { Pencil, Trash2 } from "@lucide/svelte";
+  import {
+    getTrackingStatus,
+    listKnownWorkspaces,
+    loadActivitySegments,
+    loadSuggestionState,
+    loadTrackingSettings,
+    loadWorkspaceMappings,
+    saveSuggestionState,
+    saveTrackingSettings,
+    saveWorkspaceMappings,
+    startActivityTracking,
+    stopActivityTracking,
+    type ActivitySegment,
+    type KnownWorkspace,
+    type SuggestionStateEntry,
+    type TrackingSettings,
+    type TrackingStatus,
+    type WorkspaceMapping,
+  } from "./lib/activity";
+
+  import {
+    buildActivitySuggestions,
+    type ActivitySuggestion,
+  } from "./lib/activitySuggestions";
+
+  import DashboardScreen from "./components/DashboardScreen.svelte";
+  import EntryFormModal from "./components/EntryFormModal.svelte";
+  import WorkspacesScreen from "./components/WorkspacesScreen.svelte";
+
+  import { listen } from "@tauri-apps/api/event";
+  import { onDestroy, onMount } from "svelte";
+
+  type ActiveScreen = "dashboard" | "workspaces";
+
+  type EditingSlot = {
+    entryId: string;
+    slotIndex: number;
+  };
+
+  type SlotForDisplay = {
+    slot: TimeSlot;
+    index: number;
+  };
 
   let entries: TimeEntry[] = [];
   let selectedDate = todayKey();
@@ -27,20 +66,25 @@
   let isLoading = true;
   let isSaving = false;
   let editingSlot: EditingSlot | null = null;
+  let activitySegments: ActivitySegment[] = [];
+  let workspaceMappings: WorkspaceMapping[] = [];
+  let suggestionState: SuggestionStateEntry[] = [];
+  let knownWorkspaces: KnownWorkspace[] = [];
+  let trackingStatus: TrackingStatus | null = null;
+  let trackingSettings: TrackingSettings = {
+    enabledEditors: ["cursor", "code", "vscodium"],
+    pollIntervalSecs: 10,
+  };
+  let activityError = "";
+  let activeScreen: ActiveScreen = "dashboard";
+  let entryModalOpen = false;
+
+  let unlistenSegments: (() => void) | null = null;
+  let pendingSuggestion: ActivitySuggestion | null = null;
 
   const DEFAULT_START_TIME = "09:00";
   const DEFAULT_ENTRY_MINUTES = 60;
   const MINUTES_PER_DAY = 24 * 60;
-
-  type EditingSlot = {
-    entryId: string;
-    slotIndex: number;
-  };
-
-  type SlotForDisplay = {
-    slot: TimeSlot;
-    index: number;
-  };
 
   $: dayEntries = entries
     .filter((entry) => entry.date === selectedDate)
@@ -60,6 +104,60 @@
     }, [])
     .sort((a, b) => a.localeCompare(b));
 
+  $: activitySuggestions = buildActivitySuggestions({
+    segments: activitySegments,
+    mappings: workspaceMappings,
+    suggestionState,
+    entries,
+    dateKey: selectedDate,
+  });
+
+  $: isEditing = editingSlot !== null;
+
+  const refreshActivityData = async () => {
+    const [segments, mappings, state, workspaces, status, settings] =
+      await Promise.all([
+        loadActivitySegments(),
+        loadWorkspaceMappings(),
+        loadSuggestionState(),
+        listKnownWorkspaces(),
+        getTrackingStatus(),
+        loadTrackingSettings(),
+      ]);
+
+    activitySegments = segments;
+    workspaceMappings = mappings;
+    suggestionState = state;
+    knownWorkspaces = workspaces;
+    trackingStatus = status;
+    trackingSettings = settings;
+  };
+
+  onMount(() => {
+    const setup = async () => {
+      try {
+        await refreshActivityData();
+        unlistenSegments = await listen<ActivitySegment[]>(
+          "activity-segment-updated",
+          (event) => {
+            activitySegments = event.payload;
+          },
+        );
+      } catch (loadError: unknown) {
+        activityError =
+          loadError instanceof Error
+            ? loadError.message
+            : "Could not load activity tracking.";
+      }
+    };
+
+    void setup();
+  });
+
+  onDestroy(() => {
+    unlistenSegments?.();
+  });
+
   loadEntries()
     .then((storedEntries) => {
       entries = storedEntries;
@@ -75,7 +173,42 @@
       isLoading = false;
     });
 
-  $: isEditing = editingSlot !== null;
+  const openEntryModal = () => {
+    entryModalOpen = true;
+  };
+
+  const closeEntryModal = () => {
+    entryModalOpen = false;
+    resetForm();
+  };
+
+  const openAddEntry = () => {
+    resetForm();
+    openEntryModal();
+  };
+
+  const addSlotAfter = (entry: TimeEntry, slotIndex: number) => {
+    const slot = entry.entries[slotIndex];
+    if (!slot) return;
+
+    editingSlot = null;
+    pendingSuggestion = null;
+    selectedDate = entry.date;
+    project = entry.project;
+    startTime = slot.endTime;
+    endTime = addMinutesToTime(slot.endTime, DEFAULT_ENTRY_MINUTES);
+    notes = "";
+    error = "";
+    openEntryModal();
+  };
+
+  const openWorkspaces = () => {
+    activeScreen = "workspaces";
+  };
+
+  const closeWorkspaces = () => {
+    activeScreen = "dashboard";
+  };
 
   const submitEntry = async () => {
     error = "";
@@ -117,7 +250,22 @@
 
     await persist(nextEntries);
 
-    resetForm();
+    if (pendingSuggestion) {
+      const suggestion = pendingSuggestion;
+      const existingMapping = workspaceMappings.find(
+        (mapping) => mapping.workspaceKey === suggestion.workspaceKey,
+      );
+
+      if (!existingMapping?.project?.trim()) {
+        await upsertWorkspaceMapping(suggestion.workspaceKey, {
+          project: trimmedProject,
+        });
+      }
+
+      await finalizeSuggestion(suggestion);
+    }
+
+    closeEntryModal();
   };
 
   const deleteSlot = async (entryId: string, slotIndex: number) => {
@@ -128,7 +276,7 @@
       editingSlot?.entryId === entryId &&
       editingSlot.slotIndex === slotIndex
     ) {
-      resetForm();
+      closeEntryModal();
     } else if (
       editingSlot?.entryId === entryId &&
       slotIndex < editingSlot.slotIndex
@@ -153,30 +301,39 @@
     endTime = slot.endTime;
     notes = slot.notes ?? "";
     error = "";
+    openEntryModal();
   };
 
   const resetForm = () => {
     editingSlot = null;
+    pendingSuggestion = null;
     project = "";
     applyDefaultTimes();
     notes = "";
+    error = "";
   };
 
   const moveDay = (days: number) => {
     selectedDate = shiftDateKey(selectedDate, days);
-    error = "";
 
     if (!isEditing) {
-      resetForm();
+      if (entryModalOpen) {
+        closeEntryModal();
+      } else {
+        resetForm();
+      }
     }
   };
 
   const jumpToToday = () => {
     selectedDate = todayKey();
-    error = "";
 
     if (!isEditing) {
-      resetForm();
+      if (entryModalOpen) {
+        closeEntryModal();
+      } else {
+        resetForm();
+      }
     }
   };
 
@@ -337,158 +494,219 @@
     return `${Math.floor(totalMinutes / 60)}`.padStart(2, "0") +
       `:${totalMinutes % 60}`.padStart(2, "0");
   };
+
+  const upsertWorkspaceMapping = async (
+    workspaceKey: string,
+    updates: Partial<WorkspaceMapping>,
+  ): Promise<boolean> => {
+    activityError = "";
+
+    const existing = workspaceMappings.find(
+      (mapping) => mapping.workspaceKey === workspaceKey,
+    );
+    const workspace = knownWorkspaces.find(
+      (item) => item.workspaceKey === workspaceKey,
+    );
+
+    const nextMapping: WorkspaceMapping = {
+      workspaceKey,
+      project: updates.project ?? existing?.project ?? "",
+      label: updates.label ?? existing?.label,
+      ignored: updates.ignored ?? existing?.ignored,
+    };
+
+    if (!nextMapping.label) {
+      delete nextMapping.label;
+    }
+
+    if (!nextMapping.ignored) {
+      delete nextMapping.ignored;
+    }
+
+    const nextMappings = existing
+      ? workspaceMappings.map((mapping) =>
+          mapping.workspaceKey === workspaceKey ? nextMapping : mapping,
+        )
+      : [
+          ...workspaceMappings,
+          {
+            ...nextMapping,
+            label: nextMapping.label ?? workspace?.workspaceLabel,
+          },
+        ];
+
+    try {
+      await saveWorkspaceMappings(nextMappings);
+      workspaceMappings = nextMappings;
+      return true;
+    } catch (saveError) {
+      activityError =
+        saveError instanceof Error
+          ? saveError.message
+          : "Could not save workspace mapping.";
+      return false;
+    }
+  };
+
+  const setTrackingEnabled = async (enabled: boolean) => {
+    activityError = "";
+
+    try {
+      if (enabled) {
+        await startActivityTracking();
+      } else {
+        await stopActivityTracking();
+      }
+
+      trackingStatus = await getTrackingStatus();
+    } catch (toggleError) {
+      activityError =
+        toggleError instanceof Error
+          ? toggleError.message
+          : "Could not update tracking.";
+    }
+  };
+
+  const updateTrackingSettings = async (settings: TrackingSettings) => {
+    activityError = "";
+
+    try {
+      await saveTrackingSettings(settings);
+      trackingSettings = settings;
+    } catch (saveError) {
+      activityError =
+        saveError instanceof Error
+          ? saveError.message
+          : "Could not save tracking settings.";
+    }
+  };
+
+  const recordSuggestionState = async (
+    suggestion: ActivitySuggestion,
+    status: SuggestionStateEntry["status"],
+  ) => {
+    const entry: SuggestionStateEntry = {
+      suggestionId: suggestion.id,
+      status,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const nextState = [
+      ...suggestionState.filter((item) => item.suggestionId !== suggestion.id),
+      entry,
+    ];
+
+    await saveSuggestionState(nextState);
+    suggestionState = nextState;
+  };
+
+  const finalizeSuggestion = async (suggestion: ActivitySuggestion) => {
+    const acceptedIds = suggestion.id.endsWith(":consolidated")
+      ? [
+          suggestion.id,
+          ...activitySuggestions
+            .filter((item) => item.workspaceKey === suggestion.workspaceKey)
+            .map((item) => item.id),
+        ]
+      : [suggestion.id];
+
+    const acceptedAt = new Date().toISOString();
+    const nextState = [
+      ...suggestionState.filter(
+        (item) => !acceptedIds.includes(item.suggestionId),
+      ),
+      ...acceptedIds.map((suggestionId) => ({
+        suggestionId,
+        status: "accepted" as const,
+        updatedAt: acceptedAt,
+      })),
+    ];
+
+    await saveSuggestionState(nextState);
+    suggestionState = nextState;
+  };
+
+  const startEntryFromSuggestion = (suggestion: ActivitySuggestion) => {
+    pendingSuggestion = suggestion;
+    selectedDate = suggestion.date;
+    project = suggestion.project ?? "";
+    startTime = suggestion.startTime;
+    endTime = suggestion.endTime;
+    notes = suggestion.note;
+    editingSlot = null;
+    error = "";
+    openEntryModal();
+  };
+
+  const editSuggestion = (suggestion: ActivitySuggestion) => {
+    startEntryFromSuggestion(suggestion);
+  };
+
+  const dismissSuggestion = async (suggestion: ActivitySuggestion) => {
+    await recordSuggestionState(suggestion, "dismissed");
+  };
 </script>
 
 <main class="app-shell">
-  <section class="hero-card" aria-labelledby="app-title">
-    <div>
-      <h1 id="app-title">Time Tracker</h1>
-    </div>
-
-    <div class="day-total">
-      <span>Total for day</span>
-      <strong>{formatMinutes(totalForSelectedDay)}</strong>
-    </div>
-  </section>
-
-  <section class="day-card" aria-labelledby="day-heading">
-    <div class="day-header">
-      <div>
-        <p class="eyebrow">Selected day</p>
-        <h2 id="day-heading">{formatDateLabel(selectedDate)}</h2>
-      </div>
-
-      <div class="day-actions" aria-label="Day navigation">
-        <button type="button" on:click={() => moveDay(-1)}>Previous</button>
-        <button
-          type="button"
-          on:click={jumpToToday}
-          disabled={selectedDate === todayKey()}
-        >
-          Today
-        </button>
-        <button type="button" on:click={() => moveDay(1)}>Next</button>
-      </div>
-    </div>
-
-    <form
-      class:editing={isEditing}
-      class="entry-form"
-      on:submit|preventDefault={submitEntry}
+  <div class="screen-viewport">
+    <div
+      class="screen-track"
+      class:show-workspaces={activeScreen === "workspaces"}
     >
-      {#if isEditing}
-        <div class="editing-banner">
-          <span>Editing time slot</span>
-          <button type="button" class="ghost" on:click={resetForm}
-            >Cancel</button
-          >
-        </div>
-      {/if}
+      <DashboardScreen
+        {selectedDate}
+        {totalForSelectedDay}
+        {dayEntries}
+        {isLoading}
+        onOpenWorkspaces={openWorkspaces}
+        onMoveDay={moveDay}
+        onJumpToToday={jumpToToday}
+        onAddEntry={openAddEntry}
+        onAddSlotAfter={addSlotAfter}
+        onEditSlot={editSlot}
+        onDeleteSlot={deleteSlot}
+        {slotsForDisplay}
+      />
 
-      <label>
-        <span>Project</span>
-        <input
-          bind:value={project}
-          list="project-suggestions"
-          name="project"
-          placeholder="Client work, admin, research"
-        />
-        <datalist id="project-suggestions">
-          {#each projectSuggestions as suggestedProject}
-            <option value={suggestedProject}></option>
-          {/each}
-        </datalist>
-      </label>
-
-      <div class="time-grid">
-        <label>
-          <span>Start</span>
-          <input bind:value={startTime} name="startTime" type="time" />
-        </label>
-
-        <label>
-          <span>End</span>
-          <input bind:value={endTime} name="endTime" type="time" />
-        </label>
-      </div>
-
-      <label>
-        <span>Notes <small>optional</small></span>
-        <textarea
-          bind:value={notes}
-          name="notes"
-          rows="3"
-          placeholder="What did you work on?"
-        ></textarea>
-      </label>
-
-      {#if error}
-        <p class="form-error" role="alert">{error}</p>
-      {/if}
-
-      <button class="primary" type="submit" disabled={isSaving || isLoading}>
-        {isSaving ? "Saving..." : isEditing ? "Save changes" : "Add entry"}
-      </button>
-    </form>
-  </section>
-
-  <section class="entries-card" aria-labelledby="entries-heading">
-    <div class="entries-header">
-      <div>
-        <p class="eyebrow">Entries</p>
-      </div>
+      <WorkspacesScreen
+        {knownWorkspaces}
+        {workspaceMappings}
+        {projectSuggestions}
+        {trackingStatus}
+        {trackingSettings}
+        {activitySuggestions}
+        {activitySegments}
+        {suggestionState}
+        {entries}
+        {selectedDate}
+        onBack={closeWorkspaces}
+        onToggleTracking={setTrackingEnabled}
+        onSaveMapping={upsertWorkspaceMapping}
+        onSaveSettings={updateTrackingSettings}
+        onCreateEntry={startEntryFromSuggestion}
+        onEditSuggestion={editSuggestion}
+        onDismissSuggestion={dismissSuggestion}
+      />
     </div>
+  </div>
 
-    {#if isLoading}
-      <p class="empty-state">Loading saved entries...</p>
-    {:else if dayEntries.length === 0}
-      <p class="empty-state">No time logged for this day yet.</p>
-    {:else}
-      <ul class="entry-list">
-        {#each dayEntries as entry}
-          <li>
-            <div class="entry-content">
-              <div class="entry-title">
-                <strong>{entry.project}</strong>
-                <span>{formatMinutes(entryDuration(entry))}</span>
-              </div>
+  {#if activityError}
+    <p class="form-error activity-banner" role="alert">{activityError}</p>
+  {/if}
 
-              <ul class="slot-list">
-                {#each slotsForDisplay(entry) as displaySlot}
-                  <li>
-                    <div>
-                      <p>
-                        {displaySlot.slot.startTime} - {displaySlot.slot.endTime}
-                        <span>{formatMinutes(minutesBetween(displaySlot.slot.startTime, displaySlot.slot.endTime))}</span>
-                      </p>
-                      {#if displaySlot.slot.notes}
-                        <p class="entry-notes">{displaySlot.slot.notes}</p>
-                      {/if}
-                    </div>
-
-                    <div class="entry-actions">
-                      <button
-                        type="button"
-                        class="ghost"
-                        on:click={() => editSlot(entry, displaySlot.index)}
-                        aria-label={`Edit ${entry.project} time slot`}
-                        ><Pencil /></button
-                      >
-                      <button
-                        type="button"
-                        class="ghost"
-                        on:click={() => deleteSlot(entry.id, displaySlot.index)}
-                        aria-label={`Delete ${entry.project} time slot`}
-                        ><Trash2 /></button
-                      >
-                    </div>
-                  </li>
-                {/each}
-              </ul>
-            </div>
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  </section>
+  <EntryFormModal
+    open={entryModalOpen}
+    bind:project
+    bind:startTime
+    bind:endTime
+    bind:notes
+    {error}
+    {isSaving}
+    {isLoading}
+    {isEditing}
+    {pendingSuggestion}
+    {projectSuggestions}
+    onSubmit={submitEntry}
+    onClose={closeEntryModal}
+  />
 </main>

@@ -3,6 +3,15 @@ use std::{fs, path::PathBuf};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 
+mod activity;
+
+use activity::{
+    get_tracking_status, list_known_workspaces_command, load_activity_segments,
+    load_suggestion_state, load_tracking_settings, load_workspace_mappings,
+    save_suggestion_state, save_tracking_settings, save_workspace_mappings,
+    start_activity_tracking, stop_activity_tracking, ActivityTracker,
+};
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct TimeSlot {
@@ -59,6 +68,7 @@ fn entries_path(app: &AppHandle) -> Result<PathBuf, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(ActivityTracker::new())
         .setup(|app| {
             if cfg!(debug_assertions) {
                 app.handle().plugin(
@@ -67,9 +77,31 @@ pub fn run() {
                         .build(),
                 )?;
             }
+
+            let tracker = app.state::<ActivityTracker>();
+            let settings = load_tracking_settings(app.handle().clone())?;
+            tracker.set_settings(settings)?;
+
+            let app_handle = app.handle().clone();
+            tracker.start(app_handle)?;
+
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![load_entries, save_entries])
+        .invoke_handler(tauri::generate_handler![
+            load_entries,
+            save_entries,
+            load_activity_segments,
+            load_workspace_mappings,
+            save_workspace_mappings,
+            load_suggestion_state,
+            save_suggestion_state,
+            load_tracking_settings,
+            save_tracking_settings,
+            get_tracking_status,
+            start_activity_tracking,
+            stop_activity_tracking,
+            list_known_workspaces_command,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
