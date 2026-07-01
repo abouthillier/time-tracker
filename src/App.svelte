@@ -1,8 +1,10 @@
 <script lang="ts">
   import {
+    earliestEntryStart,
     entryDuration,
     formatDateLabel,
     formatMinutes,
+    latestEntryEnd,
     loadEntries,
     minutesBetween,
     saveEntries,
@@ -10,6 +12,7 @@
     todayKey,
     totalMinutesForDay,
     type TimeEntry,
+    type TimeSlot,
   } from "./lib/timeEntries";
 
   import { Pencil, Trash2 } from "@lucide/svelte";
@@ -23,17 +26,39 @@
   let error = "";
   let isLoading = true;
   let isSaving = false;
-  let editingEntryId: string | null = null;
+  let editingSlot: EditingSlot | null = null;
 
   const DEFAULT_START_TIME = "09:00";
   const DEFAULT_ENTRY_MINUTES = 60;
   const MINUTES_PER_DAY = 24 * 60;
 
+  type EditingSlot = {
+    entryId: string;
+    slotIndex: number;
+  };
+
+  type SlotForDisplay = {
+    slot: TimeSlot;
+    index: number;
+  };
+
   $: dayEntries = entries
     .filter((entry) => entry.date === selectedDate)
-    .sort((a, b) => a.startTime.localeCompare(b.startTime));
+    .sort((a, b) =>
+      (earliestEntryStart(a) ?? "").localeCompare(earliestEntryStart(b) ?? ""),
+    );
 
   $: totalForSelectedDay = totalMinutesForDay(entries, selectedDate);
+
+  $: projectSuggestions = entries
+    .reduce<string[]>((suggestions, entry) => {
+      const hasProject = suggestions.some((suggestion) =>
+        isSameProject(suggestion, entry.project),
+      );
+
+      return hasProject ? suggestions : [...suggestions, entry.project];
+    }, [])
+    .sort((a, b) => a.localeCompare(b));
 
   loadEntries()
     .then((storedEntries) => {
@@ -50,7 +75,7 @@
       isLoading = false;
     });
 
-  $: isEditing = editingEntryId !== null;
+  $: isEditing = editingSlot !== null;
 
   const submitEntry = async () => {
     error = "";
@@ -73,30 +98,21 @@
       return;
     }
 
-    const entryValues = {
-      date: selectedDate,
-      project: trimmedProject,
+    const slotValues: TimeSlot = {
       startTime,
       endTime,
       notes: trimmedNotes || undefined,
     };
 
     const nextEntries =
-      editingEntryId === null
-        ? [
-            ...entries,
-            {
-              id: crypto.randomUUID(),
-              ...entryValues,
-            },
-          ]
-        : entries.map((entry) =>
-            entry.id === editingEntryId
-              ? {
-                  ...entry,
-                  ...entryValues,
-                }
-              : entry,
+      editingSlot === null
+        ? upsertSlot(entries, selectedDate, trimmedProject, slotValues)
+        : moveEditedSlot(
+            entries,
+            editingSlot,
+            selectedDate,
+            trimmedProject,
+            slotValues,
           );
 
     await persist(nextEntries);
@@ -104,29 +120,43 @@
     resetForm();
   };
 
-  const deleteEntry = async (entryId: string) => {
+  const deleteSlot = async (entryId: string, slotIndex: number) => {
     error = "";
-    await persist(entries.filter((entry) => entry.id !== entryId));
+    await persist(removeSlot(entries, entryId, slotIndex));
 
-    if (editingEntryId === entryId) {
+    if (
+      editingSlot?.entryId === entryId &&
+      editingSlot.slotIndex === slotIndex
+    ) {
       resetForm();
+    } else if (
+      editingSlot?.entryId === entryId &&
+      slotIndex < editingSlot.slotIndex
+    ) {
+      editingSlot = {
+        ...editingSlot,
+        slotIndex: editingSlot.slotIndex - 1,
+      };
     } else if (!isEditing) {
       applyDefaultTimes();
     }
   };
 
-  const editEntry = (entry: TimeEntry) => {
-    editingEntryId = entry.id;
+  const editSlot = (entry: TimeEntry, slotIndex: number) => {
+    const slot = entry.entries[slotIndex];
+    if (!slot) return;
+
+    editingSlot = { entryId: entry.id, slotIndex };
     selectedDate = entry.date;
     project = entry.project;
-    startTime = entry.startTime;
-    endTime = entry.endTime;
-    notes = entry.notes ?? "";
+    startTime = slot.startTime;
+    endTime = slot.endTime;
+    notes = slot.notes ?? "";
     error = "";
   };
 
   const resetForm = () => {
-    editingEntryId = null;
+    editingSlot = null;
     project = "";
     applyDefaultTimes();
     notes = "";
@@ -177,12 +207,127 @@
     entries
       .filter((entry) => entry.date === selectedDate)
       .reduce<string | null>(
-        (latestEndTime, entry) =>
-          latestEndTime === null || entry.endTime > latestEndTime
-            ? entry.endTime
-            : latestEndTime,
+        (currentLatestEndTime, entry) => {
+          const entryLatestEndTime = latestEntryEnd(entry);
+
+          return entryLatestEndTime !== null &&
+            (currentLatestEndTime === null ||
+              entryLatestEndTime > currentLatestEndTime)
+            ? entryLatestEndTime
+            : currentLatestEndTime;
+        },
         null,
       ) ?? DEFAULT_START_TIME;
+
+  const upsertSlot = (
+    currentEntries: TimeEntry[],
+    date: string,
+    projectName: string,
+    slot: TimeSlot,
+  ) => {
+    let didAppendSlot = false;
+
+    const nextEntries = currentEntries.map((entry) => {
+      if (entry.date === date && isSameProject(entry.project, projectName)) {
+        didAppendSlot = true;
+
+        return {
+          ...entry,
+          entries: sortSlots([...entry.entries, slot]),
+        };
+      }
+
+      return entry;
+    });
+
+    return didAppendSlot
+      ? nextEntries
+      : [
+          ...nextEntries,
+          {
+            id: crypto.randomUUID(),
+            date,
+            project: projectName,
+            entries: [slot],
+          },
+        ];
+  };
+
+  const moveEditedSlot = (
+    currentEntries: TimeEntry[],
+    slotToEdit: EditingSlot,
+    date: string,
+    projectName: string,
+    slot: TimeSlot,
+  ) => {
+    const originalEntry = currentEntries.find(
+      (entry) => entry.id === slotToEdit.entryId,
+    );
+
+    if (
+      originalEntry &&
+      originalEntry.date === date &&
+      isSameProject(originalEntry.project, projectName)
+    ) {
+      return currentEntries.map((entry) =>
+        entry.id === slotToEdit.entryId
+          ? {
+              ...entry,
+              project: projectName,
+              entries: sortSlots(
+                entry.entries.map((existingSlot, index) =>
+                  index === slotToEdit.slotIndex ? slot : existingSlot,
+                ),
+              ),
+            }
+          : entry,
+      );
+    }
+
+    return upsertSlot(
+      removeSlot(currentEntries, slotToEdit.entryId, slotToEdit.slotIndex),
+      date,
+      projectName,
+      slot,
+    );
+  };
+
+  const removeSlot = (
+    currentEntries: TimeEntry[],
+    entryId: string,
+    slotIndex: number,
+  ) =>
+    currentEntries
+      .map((entry) =>
+        entry.id === entryId
+          ? {
+              ...entry,
+              entries: entry.entries.filter((_, index) => index !== slotIndex),
+            }
+          : entry,
+      )
+      .filter((entry) => entry.entries.length > 0);
+
+  const slotsForDisplay = (entry: TimeEntry): SlotForDisplay[] =>
+    entry.entries
+      .map((slot, index) => ({ slot, index }))
+      .sort((a, b) =>
+        a.slot.startTime.localeCompare(b.slot.startTime) ||
+        a.slot.endTime.localeCompare(b.slot.endTime),
+      );
+
+  const sortSlots = (slots: TimeSlot[]) =>
+    [...slots].sort(
+      (a, b) =>
+        a.startTime.localeCompare(b.startTime) ||
+        a.endTime.localeCompare(b.endTime),
+    );
+
+  const isSameProject = (firstProject: string, secondProject: string) =>
+    normalizeProject(firstProject) === normalizeProject(secondProject);
+
+  const normalizeProject = (projectName: string) =>
+    projectName.trim().toLocaleLowerCase();
 
   const addMinutesToTime = (time: string, minutes: number) => {
     const [hours, currentMinutes] = time.split(":").map(Number);
@@ -233,7 +378,7 @@
     >
       {#if isEditing}
         <div class="editing-banner">
-          <span>Editing entry</span>
+          <span>Editing time slot</span>
           <button type="button" class="ghost" on:click={resetForm}
             >Cancel</button
           >
@@ -244,9 +389,15 @@
         <span>Project</span>
         <input
           bind:value={project}
+          list="project-suggestions"
           name="project"
           placeholder="Client work, admin, research"
         />
+        <datalist id="project-suggestions">
+          {#each projectSuggestions as suggestedProject}
+            <option value={suggestedProject}></option>
+          {/each}
+        </datalist>
       </label>
 
       <div class="time-grid">
@@ -296,28 +447,44 @@
       <ul class="entry-list">
         {#each dayEntries as entry}
           <li>
-            <div>
+            <div class="entry-content">
               <div class="entry-title">
                 <strong>{entry.project}</strong>
                 <span>{formatMinutes(entryDuration(entry))}</span>
               </div>
-              <p>{entry.startTime} - {entry.endTime}</p>
-              {#if entry.notes}
-                <p class="entry-notes">{entry.notes}</p>
-              {/if}
-            </div>
 
-            <div class="entry-actions">
-              <button
-                type="button"
-                class="ghost"
-                on:click={() => editEntry(entry)}><Pencil /></button
-              >
-              <button
-                type="button"
-                class="ghost"
-                on:click={() => deleteEntry(entry.id)}><Trash2 /></button
-              >
+              <ul class="slot-list">
+                {#each slotsForDisplay(entry) as displaySlot}
+                  <li>
+                    <div>
+                      <p>
+                        {displaySlot.slot.startTime} - {displaySlot.slot.endTime}
+                        <span>{formatMinutes(minutesBetween(displaySlot.slot.startTime, displaySlot.slot.endTime))}</span>
+                      </p>
+                      {#if displaySlot.slot.notes}
+                        <p class="entry-notes">{displaySlot.slot.notes}</p>
+                      {/if}
+                    </div>
+
+                    <div class="entry-actions">
+                      <button
+                        type="button"
+                        class="ghost"
+                        on:click={() => editSlot(entry, displaySlot.index)}
+                        aria-label={`Edit ${entry.project} time slot`}
+                        ><Pencil /></button
+                      >
+                      <button
+                        type="button"
+                        class="ghost"
+                        on:click={() => deleteSlot(entry.id, displaySlot.index)}
+                        aria-label={`Delete ${entry.project} time slot`}
+                        ><Trash2 /></button
+                      >
+                    </div>
+                  </li>
+                {/each}
+              </ul>
             </div>
           </li>
         {/each}

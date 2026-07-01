@@ -5,13 +5,19 @@ use tauri::{AppHandle, Manager};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+struct TimeSlot {
+    start_time: String,
+    end_time: String,
+    notes: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 struct TimeEntry {
     id: String,
     date: String,
     project: String,
-    start_time: String,
-    end_time: String,
-    notes: Option<String>,
+    entries: Vec<TimeSlot>,
 }
 
 #[tauri::command]

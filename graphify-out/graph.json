@@ -9,7 +9,7 @@
       "source_file": "svelte.config.js",
       "source_location": "L1",
       "id": "svelte_config_js",
-      "community": 10,
+      "community": 9,
       "norm_label": "svelte.config.js"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "vite.config.ts",
       "source_location": "L1",
       "id": "vite_config_ts",
-      "community": 11,
+      "community": 10,
       "norm_label": "vite.config.ts"
     },
     {
@@ -31,93 +31,156 @@
       "norm_label": "app.svelte"
     },
     {
-      "label": "submitEntry()",
+      "label": "hasProject",
       "file_type": "code",
       "source_file": "src/App.svelte",
       "source_location": "L55",
+      "id": "src_app_hasproject",
+      "community": 2,
+      "norm_label": "hasproject"
+    },
+    {
+      "label": "submitEntry()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L80",
       "id": "src_app_submitentry",
-      "community": 5,
+      "community": 3,
       "norm_label": "submitentry()"
     },
     {
-      "label": "deleteEntry()",
+      "label": "deleteSlot()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L107",
-      "id": "src_app_deleteentry",
-      "community": 5,
-      "norm_label": "deleteentry()"
+      "source_location": "L123",
+      "id": "src_app_deleteslot",
+      "community": 3,
+      "norm_label": "deleteslot()"
     },
     {
-      "label": "editEntry()",
+      "label": "editSlot()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L118",
-      "id": "src_app_editentry",
+      "source_location": "L145",
+      "id": "src_app_editslot",
       "community": 2,
-      "norm_label": "editentry()"
+      "norm_label": "editslot()"
     },
     {
       "label": "resetForm()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L128",
+      "source_location": "L158",
       "id": "src_app_resetform",
-      "community": 7,
+      "community": 5,
       "norm_label": "resetform()"
     },
     {
       "label": "moveDay()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L135",
+      "source_location": "L165",
       "id": "src_app_moveday",
-      "community": 7,
+      "community": 6,
       "norm_label": "moveday()"
     },
     {
       "label": "jumpToToday()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L144",
+      "source_location": "L174",
       "id": "src_app_jumptotoday",
-      "community": 7,
+      "community": 6,
       "norm_label": "jumptotoday()"
     },
     {
       "label": "persist()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L153",
+      "source_location": "L183",
       "id": "src_app_persist",
-      "community": 5,
+      "community": 3,
       "norm_label": "persist()"
     },
     {
       "label": "applyDefaultTimes()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L169",
+      "source_location": "L199",
       "id": "src_app_applydefaulttimes",
-      "community": 2,
+      "community": 5,
       "norm_label": "applydefaulttimes()"
     },
     {
       "label": "getDefaultStartTime()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L176",
+      "source_location": "L206",
       "id": "src_app_getdefaultstarttime",
-      "community": 2,
+      "community": 5,
       "norm_label": "getdefaultstarttime()"
+    },
+    {
+      "label": "upsertSlot()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L222",
+      "id": "src_app_upsertslot",
+      "community": 3,
+      "norm_label": "upsertslot()"
+    },
+    {
+      "label": "moveEditedSlot()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L256",
+      "id": "src_app_moveeditedslot",
+      "community": 3,
+      "norm_label": "moveeditedslot()"
+    },
+    {
+      "label": "removeSlot()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L295",
+      "id": "src_app_removeslot",
+      "community": 3,
+      "norm_label": "removeslot()"
+    },
+    {
+      "label": "sortSlots()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L319",
+      "id": "src_app_sortslots",
+      "community": 2,
+      "norm_label": "sortslots()"
+    },
+    {
+      "label": "isSameProject()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L326",
+      "id": "src_app_issameproject",
+      "community": 2,
+      "norm_label": "issameproject()"
+    },
+    {
+      "label": "normalizeProject()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L329",
+      "id": "src_app_normalizeproject",
+      "community": 2,
+      "norm_label": "normalizeproject()"
     },
     {
       "label": "addMinutesToTime()",
       "file_type": "code",
       "source_file": "src/App.svelte",
-      "source_location": "L187",
+      "source_location": "L332",
       "id": "src_app_addminutestotime",
-      "community": 2,
+      "community": 5,
       "norm_label": "addminutestotime()"
     },
     {
@@ -135,7 +198,7 @@
       "source_file": "@lucide/svelte",
       "confidence": "EXTRACTED",
       "id": "svelte",
-      "community": 8,
+      "community": 7,
       "norm_label": "@lucide/svelte"
     },
     {
@@ -144,7 +207,7 @@
       "source_file": "src/main.ts",
       "source_location": "L1",
       "id": "src_main_ts",
-      "community": 8,
+      "community": 7,
       "norm_label": "main.ts"
     },
     {
@@ -153,7 +216,7 @@
       "source_file": "src/main.ts",
       "source_location": "L5",
       "id": "src_main_app",
-      "community": 8,
+      "community": 7,
       "norm_label": "app"
     },
     {
@@ -162,7 +225,7 @@
       "source_file": "src/lib/Counter.svelte",
       "source_location": "L1",
       "id": "src_lib_counter_svelte",
-      "community": 12,
+      "community": 11,
       "norm_label": "counter.svelte"
     },
     {
@@ -171,32 +234,41 @@
       "source_file": "src/lib/timeEntries.ts",
       "source_location": "L1",
       "id": "src_lib_timeentries_ts",
-      "community": 1,
+      "community": 0,
       "norm_label": "timeentries.ts"
+    },
+    {
+      "label": "TimeSlot",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L3",
+      "id": "lib_timeentries_timeslot",
+      "community": 0,
+      "norm_label": "timeslot"
     },
     {
       "label": "TimeEntry",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L3",
+      "source_location": "L9",
       "id": "lib_timeentries_timeentry",
-      "community": 1,
+      "community": 0,
       "norm_label": "timeentry"
     },
     {
       "label": "EntryDraft",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L12",
+      "source_location": "L16",
       "id": "lib_timeentries_entrydraft",
-      "community": 1,
+      "community": 0,
       "norm_label": "entrydraft"
     },
     {
       "label": "todayKey()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L14",
+      "source_location": "L18",
       "id": "lib_timeentries_todaykey",
       "community": 6,
       "norm_label": "todaykey()"
@@ -205,7 +277,7 @@
       "label": "dateToKey()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L16",
+      "source_location": "L20",
       "id": "lib_timeentries_datetokey",
       "community": 6,
       "norm_label": "datetokey()"
@@ -214,7 +286,7 @@
       "label": "shiftDateKey()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L24",
+      "source_location": "L28",
       "id": "lib_timeentries_shiftdatekey",
       "community": 6,
       "norm_label": "shiftdatekey()"
@@ -223,72 +295,99 @@
       "label": "formatDateLabel()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L32",
+      "source_location": "L36",
       "id": "lib_timeentries_formatdatelabel",
-      "community": 1,
+      "community": 0,
       "norm_label": "formatdatelabel()"
     },
     {
       "label": "minutesBetween()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L44",
+      "source_location": "L48",
       "id": "lib_timeentries_minutesbetween",
-      "community": 4,
+      "community": 0,
       "norm_label": "minutesbetween()"
     },
     {
       "label": "formatMinutes()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L51",
+      "source_location": "L55",
       "id": "lib_timeentries_formatminutes",
-      "community": 1,
+      "community": 0,
       "norm_label": "formatminutes()"
+    },
+    {
+      "label": "slotDuration()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L65",
+      "id": "lib_timeentries_slotduration",
+      "community": 0,
+      "norm_label": "slotduration()"
     },
     {
       "label": "entryDuration()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L61",
+      "source_location": "L68",
       "id": "lib_timeentries_entryduration",
-      "community": 4,
+      "community": 0,
       "norm_label": "entryduration()"
     },
     {
       "label": "totalMinutesForDay()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L64",
+      "source_location": "L71",
       "id": "lib_timeentries_totalminutesforday",
-      "community": 1,
+      "community": 0,
       "norm_label": "totalminutesforday()"
+    },
+    {
+      "label": "earliestEntryStart()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L76",
+      "id": "lib_timeentries_earliestentrystart",
+      "community": 0,
+      "norm_label": "earliestentrystart()"
+    },
+    {
+      "label": "latestEntryEnd()",
+      "file_type": "code",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L85",
+      "id": "lib_timeentries_latestentryend",
+      "community": 0,
+      "norm_label": "latestentryend()"
     },
     {
       "label": "loadEntries()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L69",
+      "source_location": "L94",
       "id": "lib_timeentries_loadentries",
-      "community": 1,
+      "community": 0,
       "norm_label": "loadentries()"
     },
     {
       "label": "saveEntries()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L71",
+      "source_location": "L96",
       "id": "lib_timeentries_saveentries",
-      "community": 5,
+      "community": 3,
       "norm_label": "saveentries()"
     },
     {
       "label": "timeToMinutes()",
       "file_type": "code",
       "source_file": "src/lib/timeEntries.ts",
-      "source_location": "L74",
+      "source_location": "L99",
       "id": "lib_timeentries_timetominutes",
-      "community": 4,
+      "community": 0,
       "norm_label": "timetominutes()"
     },
     {
@@ -297,7 +396,7 @@
       "source_file": "src-tauri/build.rs",
       "source_location": "L1",
       "id": "src_tauri_build_rs",
-      "community": 9,
+      "community": 8,
       "norm_label": "build.rs"
     },
     {
@@ -306,7 +405,7 @@
       "source_file": "src-tauri/build.rs",
       "source_location": "L1",
       "id": "src_tauri_build_main",
-      "community": 9,
+      "community": 8,
       "norm_label": "main()"
     },
     {
@@ -315,52 +414,61 @@
       "source_file": "src-tauri/src/lib.rs",
       "source_location": "L1",
       "id": "src_tauri_src_lib_rs",
-      "community": 0,
+      "community": 1,
       "norm_label": "lib.rs"
+    },
+    {
+      "label": "TimeSlot",
+      "file_type": "code",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L8",
+      "id": "src_lib_timeslot",
+      "community": 1,
+      "norm_label": "timeslot"
     },
     {
       "label": "TimeEntry",
       "file_type": "code",
       "source_file": "src-tauri/src/lib.rs",
-      "source_location": "L8",
+      "source_location": "L16",
       "id": "src_lib_timeentry",
-      "community": 0,
+      "community": 1,
       "norm_label": "timeentry"
     },
     {
       "label": "load_entries()",
       "file_type": "code",
       "source_file": "src-tauri/src/lib.rs",
-      "source_location": "L18",
+      "source_location": "L24",
       "id": "src_lib_load_entries",
-      "community": 0,
+      "community": 1,
       "norm_label": "load_entries()"
     },
     {
       "label": "save_entries()",
       "file_type": "code",
       "source_file": "src-tauri/src/lib.rs",
-      "source_location": "L35",
+      "source_location": "L41",
       "id": "src_lib_save_entries",
-      "community": 0,
+      "community": 1,
       "norm_label": "save_entries()"
     },
     {
       "label": "entries_path()",
       "file_type": "code",
       "source_file": "src-tauri/src/lib.rs",
-      "source_location": "L42",
+      "source_location": "L48",
       "id": "src_lib_entries_path",
-      "community": 0,
+      "community": 1,
       "norm_label": "entries_path()"
     },
     {
       "label": "run()",
       "file_type": "code",
       "source_file": "src-tauri/src/lib.rs",
-      "source_location": "L54",
+      "source_location": "L60",
       "id": "src_lib_run",
-      "community": 0,
+      "community": 1,
       "norm_label": "run()"
     },
     {
@@ -369,7 +477,7 @@
       "source_file": "src-tauri/src/main.rs",
       "source_location": "L1",
       "id": "src_tauri_src_main_rs",
-      "community": 0,
+      "community": 1,
       "norm_label": "main.rs"
     },
     {
@@ -378,7 +486,7 @@
       "source_file": "src-tauri/src/main.rs",
       "source_location": "L4",
       "id": "src_main_main",
-      "community": 0,
+      "community": 1,
       "norm_label": "main()"
     },
     {
@@ -387,7 +495,7 @@
       "source_file": "README.md",
       "source_location": "L1",
       "id": "readme_md",
-      "community": 3,
+      "community": 4,
       "norm_label": "readme.md"
     },
     {
@@ -396,7 +504,7 @@
       "source_file": "README.md",
       "source_location": "L1",
       "id": "time_tracker_readme_svelte_ts_vite",
-      "community": 3,
+      "community": 4,
       "norm_label": "svelte + ts + vite"
     },
     {
@@ -405,7 +513,7 @@
       "source_file": "README.md",
       "source_location": "L5",
       "id": "time_tracker_readme_recommended_ide_setup",
-      "community": 3,
+      "community": 4,
       "norm_label": "recommended ide setup"
     },
     {
@@ -414,7 +522,7 @@
       "source_file": "README.md",
       "source_location": "L9",
       "id": "time_tracker_readme_need_an_official_svelte_framework",
-      "community": 3,
+      "community": 4,
       "norm_label": "need an official svelte framework?"
     },
     {
@@ -423,7 +531,7 @@
       "source_file": "README.md",
       "source_location": "L13",
       "id": "time_tracker_readme_technical_considerations",
-      "community": 3,
+      "community": 4,
       "norm_label": "technical considerations"
     },
     {
@@ -432,20 +540,48 @@
       "source_file": "README.md",
       "source_location": "L42",
       "id": "time_tracker_readme_codeblock_1",
-      "community": 3,
+      "community": 4,
       "norm_label": "code:ts (// store.ts)"
+    },
+    {
+      "label": "deleteEntry()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L107",
+      "community": 5,
+      "norm_label": "deleteentry()",
+      "id": "src_app_deleteentry"
+    },
+    {
+      "label": "editEntry()",
+      "file_type": "code",
+      "source_file": "src/App.svelte",
+      "source_location": "L118",
+      "community": 2,
+      "norm_label": "editentry()",
+      "id": "src_app_editentry"
     },
     {
       "label": "addEntry()",
       "file_type": "code",
       "source_file": "src/App.svelte",
       "source_location": "L42",
-      "community": 4,
+      "community": 0,
       "norm_label": "addentry()",
       "id": "src_app_addentry"
     }
   ],
   "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L55",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_hasproject"
+    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -460,21 +596,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
-      "source_location": "L81",
+      "source_location": "L123",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_app_svelte",
-      "target": "src_app_deleteentry"
+      "target": "src_app_deleteslot"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
-      "source_location": "L106",
+      "source_location": "L137",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_app_svelte",
-      "target": "src_app_editentry"
+      "target": "src_app_editslot"
     },
     {
       "relation": "contains",
@@ -540,6 +676,66 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
+      "source_location": "L214",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_upsertslot"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L248",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_moveeditedslot"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L287",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_removeslot"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L311",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_sortslots"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L318",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_issameproject"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L321",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_normalizeproject"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
       "source_location": "L185",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -577,11 +773,53 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
+      "source_location": "L81",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_deleteentry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L106",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_svelte",
+      "target": "src_app_editentry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
       "source_location": "L42",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_app_svelte",
       "target": "src_app_addentry"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L109",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_submitentry",
+      "target": "src_app_upsertslot"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L110",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_submitentry",
+      "target": "src_app_moveeditedslot"
     },
     {
       "relation": "calls",
@@ -621,10 +859,10 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
-      "source_location": "L104",
+      "source_location": "L125",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "src_app_deleteentry",
+      "source": "src_app_deleteslot",
       "target": "src_app_persist"
     },
     {
@@ -632,10 +870,21 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
-      "source_location": "L102",
+      "source_location": "L125",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "src_app_deleteentry",
+      "source": "src_app_deleteslot",
+      "target": "src_app_removeslot"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L131",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_deleteslot",
       "target": "src_app_resetform"
     },
     {
@@ -643,10 +892,10 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
-      "source_location": "L114",
+      "source_location": "L133",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "src_app_deleteentry",
+      "source": "src_app_deleteslot",
       "target": "src_app_applydefaulttimes"
     },
     {
@@ -680,6 +929,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_app_jumptotoday",
+      "target": "src_app_resetform"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L102",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_deleteentry",
       "target": "src_app_resetform"
     },
     {
@@ -720,6 +980,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/App.svelte",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_deleteentry",
+      "target": "src_app_persist"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
       "source_location": "L168",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -736,6 +1007,61 @@
       "confidence_score": 1.0,
       "source": "src_app_applydefaulttimes",
       "target": "src_app_addminutestotime"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L114",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_deleteentry",
+      "target": "src_app_applydefaulttimes"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L279",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_moveeditedslot",
+      "target": "src_app_upsertslot"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L262",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_moveeditedslot",
+      "target": "src_app_issameproject"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L280",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_moveeditedslot",
+      "target": "src_app_removeslot"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.svelte",
+      "source_location": "L319",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_issameproject",
+      "target": "src_app_normalizeproject"
     },
     {
       "relation": "imports_from",
@@ -757,6 +1083,16 @@
       "confidence_score": 1.0,
       "source": "src_main_ts",
       "target": "src_main_app"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_timeslot"
     },
     {
       "relation": "contains",
@@ -842,6 +1178,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L65",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_slotduration"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
       "source_location": "L61",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -857,6 +1203,26 @@
       "confidence_score": 1.0,
       "source": "src_lib_timeentries_ts",
       "target": "lib_timeentries_totalminutesforday"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L76",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_earliestentrystart"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L85",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_lib_timeentries_ts",
+      "target": "lib_timeentries_latestentryend"
     },
     {
       "relation": "contains",
@@ -926,6 +1292,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/timeEntries.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_timeentries_slotduration",
+      "target": "lib_timeentries_minutesbetween"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/timeEntries.ts",
       "source_location": "L62",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -952,6 +1329,16 @@
       "confidence_score": 1.0,
       "source": "src_tauri_build_rs",
       "target": "src_tauri_build_main"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src-tauri/src/lib.rs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_tauri_src_lib_rs",
+      "target": "src_lib_timeslot"
     },
     {
       "relation": "contains",
@@ -1097,5 +1484,6 @@
       "target": "time_tracker_readme_codeblock_1"
     }
   ],
-  "hyperedges": []
+  "hyperedges": [],
+  "built_at_commit": "40c242e38e2d121fd56cd20b65cf867f3870e482"
 }

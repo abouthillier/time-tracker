@@ -1,12 +1,16 @@
 import { invoke } from '@tauri-apps/api/core'
 
+export type TimeSlot = {
+  startTime: string
+  endTime: string
+  notes?: string
+}
+
 export type TimeEntry = {
   id: string
   date: string
   project: string
-  startTime: string
-  endTime: string
-  notes?: string
+  entries: TimeSlot[]
 }
 
 export type EntryDraft = Omit<TimeEntry, 'id'>
@@ -58,13 +62,34 @@ export const formatMinutes = (minutes: number) => {
   return `${hours}h ${remainder}m`
 }
 
-export const entryDuration = (entry: Pick<TimeEntry, 'startTime' | 'endTime'>) =>
-  minutesBetween(entry.startTime, entry.endTime)
+export const slotDuration = (slot: TimeSlot) =>
+  minutesBetween(slot.startTime, slot.endTime)
+
+export const entryDuration = (entry: Pick<TimeEntry, 'entries'>) =>
+  entry.entries.reduce((total, slot) => total + slotDuration(slot), 0)
 
 export const totalMinutesForDay = (entries: TimeEntry[], dateKey: string) =>
   entries
     .filter((entry) => entry.date === dateKey)
     .reduce((total, entry) => total + entryDuration(entry), 0)
+
+export const earliestEntryStart = (entry: Pick<TimeEntry, 'entries'>) =>
+  entry.entries.reduce<string | null>(
+    (earliestStartTime, slot) =>
+      earliestStartTime === null || slot.startTime < earliestStartTime
+        ? slot.startTime
+        : earliestStartTime,
+    null,
+  )
+
+export const latestEntryEnd = (entry: Pick<TimeEntry, 'entries'>) =>
+  entry.entries.reduce<string | null>(
+    (latestEndTime, slot) =>
+      latestEndTime === null || slot.endTime > latestEndTime
+        ? slot.endTime
+        : latestEndTime,
+    null,
+  )
 
 export const loadEntries = () => invoke<TimeEntry[]>('load_entries')
 
