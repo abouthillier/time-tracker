@@ -7,21 +7,17 @@
     type TrackingStatus,
     type WorkspaceMapping,
   } from "../lib/activity";
-  import { ChevronDown } from "@lucide/svelte";
 
   export let knownWorkspaces: KnownWorkspace[] = [];
   export let mappings: WorkspaceMapping[] = [];
   export let projectSuggestions: string[] = [];
   export let trackingStatus: TrackingStatus | null = null;
   export let trackingSettings: TrackingSettings;
-  export let onToggleTracking: (enabled: boolean) => void;
   export let onSaveMapping: (
     workspaceKey: string,
     updates: Partial<WorkspaceMapping>,
   ) => void;
   export let onSaveSettings: (settings: TrackingSettings) => void;
-
-  let expanded = false;
 
   const editorOptions: EditorKind[] = ["cursor", "code", "vscodium"];
 
@@ -36,6 +32,27 @@
 
   const ignoredValue = (workspaceKey: string) =>
     mappingFor(workspaceKey)?.ignored === true;
+
+  type IgnoreFilter = "all" | "hide-ignored" | "only-ignored";
+  let ignoreFilter: IgnoreFilter = "all";
+
+  const setIgnoreFilter = (filter: "hide-ignored" | "only-ignored") => {
+    ignoreFilter = ignoreFilter === filter ? "all" : filter;
+  };
+
+  $: visibleWorkspaces = knownWorkspaces.filter((workspace) => {
+    const ignored = ignoredValue(workspace.workspaceKey);
+
+    if (ignoreFilter === "hide-ignored") {
+      return !ignored;
+    }
+
+    if (ignoreFilter === "only-ignored") {
+      return ignored;
+    }
+
+    return true;
+  });
 
   const toggleEditor = (editor: EditorKind) => {
     const enabled = new Set(trackingSettings.enabledEditors);
@@ -52,36 +69,15 @@
   };
 </script>
 
-<section class="mappings-card" class:collapsed={!expanded} aria-labelledby="workspaces-heading">
+<section class="mappings-card glass-card" aria-labelledby="workspaces-heading">
   <div class="entries-header mappings-header">
-    <button
-      type="button"
-      class="collapse-toggle"
-      aria-expanded={expanded}
-      aria-controls="mappings-panel"
-      on:click={() => (expanded = !expanded)}
-    >
-      <span class="collapse-icon" class:expanded>
-        <ChevronDown />
-      </span>
-      <span>
-        <p class="eyebrow">Tracking</p>
-        <h2 id="workspaces-heading">Workspace mappings</h2>
-      </span>
-    </button>
-
-    <label class="tracking-toggle">
-      <input
-        type="checkbox"
-        checked={trackingStatus?.enabled ?? false}
-        on:change={(event) =>
-          onToggleTracking((event.currentTarget as HTMLInputElement).checked)}
-      />
-      <span>Track editor focus</span>
-    </label>
+    <div>
+      <p class="eyebrow">Tracking</p>
+      <h2 id="workspaces-heading">Workspace mappings</h2>
+    </div>
   </div>
 
-  <div id="mappings-panel" class="mappings-panel" hidden={!expanded}>
+  <div id="mappings-panel" class="mappings-panel">
     {#if trackingStatus?.lastError}
       <p class="form-error" role="status">{trackingStatus.lastError}</p>
     {/if}
@@ -105,14 +101,61 @@
         this list.
       </p>
     {:else}
+      <div class="mapping-filters" aria-label="Workspace list filters">
+        <button
+          type="button"
+          class="filter-btn"
+          class:active={ignoreFilter === "hide-ignored"}
+          aria-pressed={ignoreFilter === "hide-ignored"}
+          on:click={() => setIgnoreFilter("hide-ignored")}
+        >
+          Hide ignored
+        </button>
+        <button
+          type="button"
+          class="filter-btn"
+          class:active={ignoreFilter === "only-ignored"}
+          aria-pressed={ignoreFilter === "only-ignored"}
+          on:click={() => setIgnoreFilter("only-ignored")}
+        >
+          Show only ignored
+        </button>
+      </div>
+
+      {#if visibleWorkspaces.length === 0}
+        <p class="empty-state">
+          {#if ignoreFilter === "only-ignored"}
+            No ignored workspaces yet.
+          {:else if ignoreFilter === "hide-ignored"}
+            All workspaces are ignored. Turn off "Hide ignored" to see them.
+          {:else}
+            No workspaces to show.
+          {/if}
+        </p>
+      {:else}
       <ul class="mapping-list">
-        {#each knownWorkspaces as workspace (workspace.workspaceKey)}
+        {#each visibleWorkspaces as workspace (workspace.workspaceKey)}
           <li>
-            <div class="mapping-content">
-              <strong>{workspace.workspaceLabel}</strong>
-              {#if workspace.editor}
-                <span>{editorLabel(workspace.editor)}</span>
-              {/if}
+            <div class="mapping-header">
+              <div class="mapping-content">
+                <strong>{workspace.workspaceLabel}</strong>
+                {#if workspace.editor}
+                  <span>{editorLabel(workspace.editor)}</span>
+                {/if}
+              </div>
+
+              <label class="ignore-toggle">
+                <input
+                  type="checkbox"
+                  checked={ignoredValue(workspace.workspaceKey)}
+                  aria-label="Ignore suggestions for {workspace.workspaceLabel}"
+                  on:change={(event) =>
+                    onSaveMapping(workspace.workspaceKey, {
+                      ignored: (event.currentTarget as HTMLInputElement).checked,
+                    })}
+                />
+                <span>Ignore</span>
+              </label>
             </div>
 
             <div class="mapping-fields">
@@ -120,7 +163,7 @@
                 <span>Project</span>
                 <input
                   value={projectValue(workspace.workspaceKey)}
-                  list="project-suggestions"
+                  list="mapping-project-suggestions"
                   placeholder="NGS, NCC, admin"
                   on:change={(event) =>
                     onSaveMapping(workspace.workspaceKey, {
@@ -140,25 +183,14 @@
                     })}
                 />
               </label>
-
-              <label class="ignore-toggle">
-                <input
-                  type="checkbox"
-                  checked={ignoredValue(workspace.workspaceKey)}
-                  on:change={(event) =>
-                    onSaveMapping(workspace.workspaceKey, {
-                      ignored: (event.currentTarget as HTMLInputElement).checked,
-                    })}
-                />
-                <span>Ignore suggestions</span>
-              </label>
             </div>
           </li>
         {/each}
       </ul>
+      {/if}
     {/if}
 
-    <datalist id="project-suggestions">
+    <datalist id="mapping-project-suggestions">
       {#each projectSuggestions as suggestedProject}
         <option value={suggestedProject}></option>
       {/each}

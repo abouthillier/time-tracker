@@ -33,17 +33,30 @@ export const shiftDateKey = (dateKey: string, days: number) => {
   return dateToKey(date)
 }
 
-export const formatDateLabel = (dateKey: string) => {
+const dateFromKey = (dateKey: string) => {
   const [year, month, day] = dateKey.split('-').map(Number)
-  const date = new Date(year, month - 1, day)
+  return new Date(year, month - 1, day)
+}
 
-  return new Intl.DateTimeFormat(undefined, {
+export const formatWeekdayLabel = (dateKey: string) =>
+  new Intl.DateTimeFormat(undefined, { weekday: 'long' }).format(
+    dateFromKey(dateKey),
+  )
+
+export const formatDateSubLabel = (dateKey: string) =>
+  new Intl.DateTimeFormat(undefined, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(dateFromKey(dateKey))
+
+export const formatDateLabel = (dateKey: string) =>
+  new Intl.DateTimeFormat(undefined, {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-  }).format(date)
-}
+  }).format(dateFromKey(dateKey))
 
 export const minutesBetween = (startTime: string, endTime: string) => {
   const start = timeToMinutes(startTime)

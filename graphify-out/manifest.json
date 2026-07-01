@@ -8,20 +8,36 @@
     "hash": "6779ae67d91ea1f7cd4336edd1c12c31"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\App.svelte": {
-    "mtime": 1782916485.227527,
-    "hash": "48a8a3c99e6d229cd28e93e4d0d0fb07"
+    "mtime": 1782927053.125139,
+    "hash": "bf82e0b1eab0ee31f444104856a5ec34"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\main.ts": {
     "mtime": 1782763236.4821265,
     "hash": "205501b6b50c46e655ecdb69ec57f760"
   },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\DashboardScreen.svelte": {
+    "mtime": 1782927055.282789,
+    "hash": "763239209beeeb48edc8213bce2b0532"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\EntryForm.svelte": {
+    "mtime": 1782917441.862973,
+    "hash": "54e867add0dd47938cdd5b7089441d6f"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\EntryFormModal.svelte": {
+    "mtime": 1782917544.5146153,
+    "hash": "2e9c29bc71737a456204ea396000d1cd"
+  },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\SuggestionsPanel.svelte": {
-    "mtime": 1782916498.1932771,
-    "hash": "951824ae9860296bdc87a5431ba85765"
+    "mtime": 1782916697.8836985,
+    "hash": "9df2bdcbb515753e60c94650f9c7bd48"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\WorkspaceMappings.svelte": {
-    "mtime": 1782915202.751824,
-    "hash": "bc103e2710a897d2cf1ab0583c71c735"
+    "mtime": 1782917817.4051478,
+    "hash": "e1789a5e4bc995c1fbc082a137b487c6"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\WorkspacesScreen.svelte": {
+    "mtime": 1782917834.537049,
+    "hash": "bcb5f6ac83cb1b7d83a2bdbf4521254d"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\activity.ts": {
     "mtime": 1782914646.209971,
@@ -36,8 +52,8 @@
     "hash": "017edcf14363a115e5588eeec8a9a0d2"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\timeEntries.ts": {
-    "mtime": 1782831763.1473992,
-    "hash": "043a99a4ce367e2cc367d4d36e263da6"
+    "mtime": 1782919683.0501006,
+    "hash": "54e9cafda072142055706bf6fe3138cc"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\build.rs": {
     "mtime": 1782392628.7562735,
