@@ -1,13 +1,20 @@
 <script lang="ts">
   import {
     earliestEntryStart,
+    isRmReadyEntry,
     latestEntryEnd,
     loadEntries,
     minutesBetween,
+    moveEditedSlot,
+    prepareEntriesForSave,
+    removeSlot,
     saveEntries,
     shiftDateKey,
     todayKey,
     totalMinutesForDay,
+    upsertSlot,
+    isSameProject,
+    type EntryTarget,
     type TimeEntry,
     type TimeSlot,
   } from "./lib/timeEntries";
@@ -37,9 +44,30 @@
     type ActivitySuggestion,
   } from "./lib/activitySuggestions";
 
+  import {
+    getRmLinkedUser,
+    hasRmToken,
+    loadRmCatalog,
+    loadRmSettings,
+    saveRmSettings,
+    type RmCatalogCache,
+    type RmLinkedUser,
+    type RmSettings,
+  } from "./lib/rm";
+
+  import {
+    collectLegacyProjectKeys,
+    findCatalogProject,
+    isCatalogReady,
+    categoriesForCatalog,
+    syncEntryLabelsFromCatalog,
+  } from "./lib/rmCatalog";
+
   import DashboardScreen from "./components/DashboardScreen.svelte";
   import EntryFormModal from "./components/EntryFormModal.svelte";
+  import RmMigrationModal from "./components/RmMigrationModal.svelte";
   import RmSettingsScreen from "./components/RmSettingsScreen.svelte";
+  import RmSyncModal from "./components/RmSyncModal.svelte";
   import WorkspacesScreen from "./components/WorkspacesScreen.svelte";
 
   import { listen } from "@tauri-apps/api/event";
@@ -60,6 +88,8 @@
   let entries: TimeEntry[] = [];
   let selectedDate = todayKey();
   let project = "";
+  let assignableId: number | null = null;
+  let category = "";
   let startTime = "09:00";
   let endTime = "10:00";
   let notes = "";
@@ -79,6 +109,13 @@
   let activityError = "";
   let activeScreen: ActiveScreen = "dashboard";
   let entryModalOpen = false;
+  let rmCatalog: RmCatalogCache | null = null;
+  let rmSettings: RmSettings | null = null;
+  let rmHasToken = false;
+  let rmLinkedUser: RmLinkedUser | null = null;
+  let migrationOpen = false;
+  let syncModalOpen = false;
+  let legacyKeys: string[] = [];
 
   let unlistenSegments: (() => void) | null = null;
   let pendingSuggestion: ActivitySuggestion | null = null;
@@ -87,6 +124,12 @@
   const DEFAULT_ENTRY_MINUTES = 60;
   const MINUTES_PER_DAY = 24 * 60;
 
+  $: rmPickersActive = isCatalogReady(rmCatalog);
+
+  $: legacyKeyCount = rmPickersActive
+    ? collectLegacyProjectKeys(entries, workspaceMappings, rmCatalog).length
+    : 0;
+
   $: dayEntries = entries
     .filter((entry) => entry.date === selectedDate)
     .sort((a, b) =>
@@ -94,6 +137,12 @@
     );
 
   $: totalForSelectedDay = totalMinutesForDay(entries, selectedDate);
+
+  $: canSyncDay =
+    rmHasToken &&
+    isCatalogReady(rmCatalog) &&
+    Boolean(rmLinkedUser) &&
+    dayEntries.some(isRmReadyEntry);
 
   $: projectSuggestions = entries
     .reduce<string[]>((suggestions, entry) => {
@@ -134,10 +183,64 @@
     trackingSettings = settings;
   };
 
+  const refreshRmData = async () => {
+    try {
+      const [catalog, settings, tokenSaved, linkedUser] = await Promise.all([
+        loadRmCatalog(),
+        loadRmSettings(),
+        hasRmToken(),
+        getRmLinkedUser(),
+      ]);
+
+      rmCatalog = catalog;
+      rmSettings = settings;
+      rmHasToken = tokenSaved;
+      rmLinkedUser = linkedUser ?? settings.linkedUser ?? null;
+
+      if (catalog) {
+        entries = syncEntryLabelsFromCatalog(entries, catalog);
+      }
+
+      maybeOpenMigration();
+    } catch {
+      // RM not configured yet — keep local-only mode.
+    }
+  };
+
+  const maybeOpenMigration = () => {
+    if (!isCatalogReady(rmCatalog)) {
+      return;
+    }
+
+    if (rmSettings?.legacyMigrationCompletedAt) {
+      return;
+    }
+
+    legacyKeys = collectLegacyProjectKeys(
+      entries,
+      workspaceMappings,
+      rmCatalog,
+    );
+    migrationOpen = legacyKeys.length > 0;
+  };
+
+  const openMigrationWizard = () => {
+    if (!isCatalogReady(rmCatalog)) {
+      return;
+    }
+
+    legacyKeys = collectLegacyProjectKeys(
+      entries,
+      workspaceMappings,
+      rmCatalog,
+    );
+    migrationOpen = legacyKeys.length > 0;
+  };
+
   onMount(() => {
     const setup = async () => {
       try {
-        await refreshActivityData();
+        await Promise.all([refreshActivityData(), refreshRmData()]);
         unlistenSegments = await listen<ActivitySegment[]>(
           "activity-segment-updated",
           (event) => {
@@ -163,6 +266,7 @@
     .then((storedEntries) => {
       entries = storedEntries;
       applyDefaultTimes();
+      maybeOpenMigration();
     })
     .catch((loadError: unknown) => {
       error =
@@ -196,6 +300,8 @@
     pendingSuggestion = null;
     selectedDate = entry.date;
     project = entry.project;
+    assignableId = entry.assignableId ?? null;
+    category = entry.category ?? "";
     startTime = slot.endTime;
     endTime = addMinutesToTime(slot.endTime, DEFAULT_ENTRY_MINUTES);
     notes = "";
@@ -215,18 +321,51 @@
     activeScreen = "rm";
   };
 
-  const closeRmSettings = () => {
+  const closeRmSettings = async () => {
     activeScreen = "dashboard";
+    await refreshRmData();
+  };
+
+  const buildEntryTarget = (): EntryTarget | null => {
+    const trimmedProject = project.trim();
+    const trimmedCategory = category.trim();
+
+    if (rmPickersActive) {
+      if (assignableId == null) {
+        return null;
+      }
+
+      const catalogProject = findCatalogProject(rmCatalog, assignableId);
+      if (!catalogProject) {
+        return null;
+      }
+
+      if (categoriesForCatalog(rmCatalog).length > 0 && !trimmedCategory) {
+        return null;
+      }
+
+      return {
+        assignableId,
+        project: catalogProject.name,
+        category: trimmedCategory || undefined,
+      };
+    }
+
+    if (!trimmedProject) {
+      return null;
+    }
+
+    return { project: trimmedProject };
   };
 
   const submitEntry = async () => {
     error = "";
 
-    const trimmedProject = project.trim();
-    const trimmedNotes = notes.trim();
-
-    if (!trimmedProject) {
-      error = "Add a project name before saving.";
+    const target = buildEntryTarget();
+    if (!target) {
+      error = rmPickersActive
+        ? "Choose a project and category before saving."
+        : "Add a project name before saving.";
       return;
     }
 
@@ -240,6 +379,7 @@
       return;
     }
 
+    const trimmedNotes = notes.trim();
     const slotValues: TimeSlot = {
       startTime,
       endTime,
@@ -248,12 +388,12 @@
 
     const nextEntries =
       editingSlot === null
-        ? upsertSlot(entries, selectedDate, trimmedProject, slotValues)
+        ? upsertSlot(entries, selectedDate, target, slotValues)
         : moveEditedSlot(
             entries,
             editingSlot,
             selectedDate,
-            trimmedProject,
+            target,
             slotValues,
           );
 
@@ -267,7 +407,9 @@
 
       if (!existingMapping?.project?.trim()) {
         await upsertWorkspaceMapping(suggestion.workspaceKey, {
-          project: trimmedProject,
+          project: target.project,
+          assignableId: target.assignableId,
+          defaultCategory: target.category,
         });
       }
 
@@ -306,6 +448,8 @@
     editingSlot = { entryId: entry.id, slotIndex };
     selectedDate = entry.date;
     project = entry.project;
+    assignableId = entry.assignableId ?? null;
+    category = entry.category ?? "";
     startTime = slot.startTime;
     endTime = slot.endTime;
     notes = slot.notes ?? "";
@@ -317,6 +461,8 @@
     editingSlot = null;
     pendingSuggestion = null;
     project = "";
+    assignableId = null;
+    category = "";
     applyDefaultTimes();
     notes = "";
     error = "";
@@ -350,8 +496,9 @@
     isSaving = true;
 
     try {
-      await saveEntries(nextEntries);
-      entries = nextEntries;
+      const preparedEntries = prepareEntriesForSave(entries, nextEntries);
+      await saveEntries(preparedEntries);
+      entries = preparedEntries;
     } catch (saveError) {
       error =
         saveError instanceof Error
@@ -360,6 +507,19 @@
     } finally {
       isSaving = false;
     }
+  };
+
+  const reloadEntriesAfterSync = async () => {
+    entries = await loadEntries();
+  };
+
+  const openSyncModal = () => {
+    syncModalOpen = true;
+  };
+
+  const closeSyncModal = async () => {
+    syncModalOpen = false;
+    await refreshRmData();
   };
 
   const applyDefaultTimes = () => {
@@ -385,95 +545,6 @@
         null,
       ) ?? DEFAULT_START_TIME;
 
-  const upsertSlot = (
-    currentEntries: TimeEntry[],
-    date: string,
-    projectName: string,
-    slot: TimeSlot,
-  ) => {
-    let didAppendSlot = false;
-
-    const nextEntries = currentEntries.map((entry) => {
-      if (entry.date === date && isSameProject(entry.project, projectName)) {
-        didAppendSlot = true;
-
-        return {
-          ...entry,
-          entries: sortSlots([...entry.entries, slot]),
-        };
-      }
-
-      return entry;
-    });
-
-    return didAppendSlot
-      ? nextEntries
-      : [
-          ...nextEntries,
-          {
-            id: crypto.randomUUID(),
-            date,
-            project: projectName,
-            entries: [slot],
-          },
-        ];
-  };
-
-  const moveEditedSlot = (
-    currentEntries: TimeEntry[],
-    slotToEdit: EditingSlot,
-    date: string,
-    projectName: string,
-    slot: TimeSlot,
-  ) => {
-    const originalEntry = currentEntries.find(
-      (entry) => entry.id === slotToEdit.entryId,
-    );
-
-    if (
-      originalEntry &&
-      originalEntry.date === date &&
-      isSameProject(originalEntry.project, projectName)
-    ) {
-      return currentEntries.map((entry) =>
-        entry.id === slotToEdit.entryId
-          ? {
-              ...entry,
-              project: projectName,
-              entries: sortSlots(
-                entry.entries.map((existingSlot, index) =>
-                  index === slotToEdit.slotIndex ? slot : existingSlot,
-                ),
-              ),
-            }
-          : entry,
-      );
-    }
-
-    return upsertSlot(
-      removeSlot(currentEntries, slotToEdit.entryId, slotToEdit.slotIndex),
-      date,
-      projectName,
-      slot,
-    );
-  };
-
-  const removeSlot = (
-    currentEntries: TimeEntry[],
-    entryId: string,
-    slotIndex: number,
-  ) =>
-    currentEntries
-      .map((entry) =>
-        entry.id === entryId
-          ? {
-              ...entry,
-              entries: entry.entries.filter((_, index) => index !== slotIndex),
-            }
-          : entry,
-      )
-      .filter((entry) => entry.entries.length > 0);
-
   const slotsForDisplay = (entry: TimeEntry): SlotForDisplay[] =>
     entry.entries
       .map((slot, index) => ({ slot, index }))
@@ -482,19 +553,6 @@
         a.slot.endTime.localeCompare(b.slot.endTime),
       );
 
-  const sortSlots = (slots: TimeSlot[]) =>
-    [...slots].sort(
-      (a, b) =>
-        a.startTime.localeCompare(b.startTime) ||
-        a.endTime.localeCompare(b.endTime),
-    );
-
-  const isSameProject = (firstProject: string, secondProject: string) =>
-    normalizeProject(firstProject) === normalizeProject(secondProject);
-
-  const normalizeProject = (projectName: string) =>
-    projectName.trim().toLocaleLowerCase();
-
   const addMinutesToTime = (time: string, minutes: number) => {
     const [hours, currentMinutes] = time.split(":").map(Number);
     const totalMinutes =
@@ -502,6 +560,36 @@
 
     return `${Math.floor(totalMinutes / 60)}`.padStart(2, "0") +
       `:${totalMinutes % 60}`.padStart(2, "0");
+  };
+
+  const completeMigration = async ({
+    entries: nextEntries,
+    mappings: nextMappings,
+  }: {
+    entries: TimeEntry[];
+    mappings: WorkspaceMapping[];
+  }) => {
+    try {
+      await saveEntries(nextEntries);
+      entries = nextEntries;
+      await saveWorkspaceMappings(nextMappings);
+      workspaceMappings = nextMappings;
+
+      const nextSettings: RmSettings = {
+        region: rmSettings?.region ?? "us",
+        catalogFetchedAt: rmSettings?.catalogFetchedAt ?? rmCatalog?.fetchedAt,
+        legacyMigrationCompletedAt: new Date().toISOString(),
+        linkedUser: rmSettings?.linkedUser ?? rmLinkedUser ?? undefined,
+      };
+      await saveRmSettings(nextSettings);
+      rmSettings = nextSettings;
+      migrationOpen = false;
+    } catch (saveError) {
+      activityError =
+        saveError instanceof Error
+          ? saveError.message
+          : "Could not save migration results.";
+    }
   };
 
   const upsertWorkspaceMapping = async (
@@ -520,6 +608,8 @@
     const nextMapping: WorkspaceMapping = {
       workspaceKey,
       project: updates.project ?? existing?.project ?? "",
+      assignableId: updates.assignableId ?? existing?.assignableId,
+      defaultCategory: updates.defaultCategory ?? existing?.defaultCategory,
       label: updates.label ?? existing?.label,
       ignored: updates.ignored ?? existing?.ignored,
     };
@@ -530,6 +620,14 @@
 
     if (!nextMapping.ignored) {
       delete nextMapping.ignored;
+    }
+
+    if (nextMapping.assignableId == null) {
+      delete nextMapping.assignableId;
+    }
+
+    if (!nextMapping.defaultCategory) {
+      delete nextMapping.defaultCategory;
     }
 
     const nextMappings = existing
@@ -636,9 +734,15 @@
   };
 
   const startEntryFromSuggestion = (suggestion: ActivitySuggestion) => {
+    const mapping = workspaceMappings.find(
+      (item) => item.workspaceKey === suggestion.workspaceKey,
+    );
+
     pendingSuggestion = suggestion;
     selectedDate = suggestion.date;
-    project = suggestion.project ?? "";
+    project = mapping?.project?.trim() || suggestion.project || "";
+    assignableId = mapping?.assignableId ?? null;
+    category = mapping?.defaultCategory ?? "";
     startTime = suggestion.startTime;
     endTime = suggestion.endTime;
     notes = suggestion.note;
@@ -664,8 +768,10 @@
         {totalForSelectedDay}
         {dayEntries}
         {isLoading}
+        {canSyncDay}
         onOpenWorkspaces={openWorkspaces}
         onOpenRmSettings={openRmSettings}
+        onSyncDay={openSyncModal}
         onMoveDay={moveDay}
         onJumpToToday={jumpToToday}
         onAddEntry={openAddEntry}
@@ -679,6 +785,7 @@
         {knownWorkspaces}
         {workspaceMappings}
         {projectSuggestions}
+        catalog={rmCatalog}
         {trackingStatus}
         {trackingSettings}
         {activitySuggestions}
@@ -695,7 +802,11 @@
         onDismissSuggestion={dismissSuggestion}
       />
 
-      <RmSettingsScreen onBack={closeRmSettings} />
+      <RmSettingsScreen
+        onBack={closeRmSettings}
+        {legacyKeyCount}
+        onOpenMigration={openMigrationWizard}
+      />
     </div>
   </div>
 
@@ -706,16 +817,38 @@
   <EntryFormModal
     open={entryModalOpen}
     bind:project
+    bind:assignableId
+    bind:category
     bind:startTime
     bind:endTime
     bind:notes
+    catalog={rmCatalog}
     {error}
     {isSaving}
     {isLoading}
     {isEditing}
     {pendingSuggestion}
-    {projectSuggestions}
     onSubmit={submitEntry}
     onClose={closeEntryModal}
+  />
+
+  <RmMigrationModal
+    open={migrationOpen}
+    catalog={rmCatalog ?? { fetchedAt: "", projects: [] }}
+    {entries}
+    mappings={workspaceMappings}
+    {legacyKeys}
+    onComplete={completeMigration}
+    onClose={() => {
+      migrationOpen = false;
+    }}
+  />
+
+  <RmSyncModal
+    open={syncModalOpen}
+    {selectedDate}
+    linkedUser={rmLinkedUser}
+    onClose={closeSyncModal}
+    onSyncComplete={reloadEntriesAfterSync}
   />
 </main>

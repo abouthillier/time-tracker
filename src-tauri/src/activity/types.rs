@@ -38,7 +38,12 @@ pub struct ActivitySegment {
 #[serde(rename_all = "camelCase")]
 pub struct WorkspaceMapping {
     pub workspace_key: String,
+    #[serde(default)]
     pub project: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub assignable_id: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default_category: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -51,7 +51,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -269,6 +270,20 @@ h2 {
   }
 }
 
+.sync-day-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 .tracking-header-toggle {
   flex-shrink: 0;
   border: 1px solid var(--bg-card-border);
@@ -346,7 +361,8 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   border: 1px solid var(--bg-card-border);
   border-radius: 12px;
@@ -358,6 +374,28 @@ textarea {
   &:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px var(--primary-glow);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+select {
+  padding-right: 40px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-color: var(--bg-input);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(240%2C242%2C248%2C0.55)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+
+  option {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
   }
 }
 

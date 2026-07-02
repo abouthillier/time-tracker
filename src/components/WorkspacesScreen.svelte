@@ -10,12 +10,14 @@
   } from "../lib/activity";
   import type { ActivitySuggestion } from "../lib/activitySuggestions";
   import type { TimeEntry } from "../lib/timeEntries";
+  import type { RmCatalogCache } from "../lib/rm";
   import SuggestionsPanel from "./SuggestionsPanel.svelte";
   import WorkspaceMappings from "./WorkspaceMappings.svelte";
 
   export let knownWorkspaces: KnownWorkspace[] = [];
   export let workspaceMappings: WorkspaceMapping[] = [];
   export let projectSuggestions: string[] = [];
+  export let catalog: RmCatalogCache | null = null;
   export let trackingStatus: TrackingStatus | null = null;
   export let trackingSettings: TrackingSettings;
   export let activitySuggestions: ActivitySuggestion[] = [];
@@ -79,6 +81,7 @@
     {knownWorkspaces}
     mappings={workspaceMappings}
     {projectSuggestions}
+    {catalog}
     {trackingStatus}
     {trackingSettings}
     {onSaveMapping}

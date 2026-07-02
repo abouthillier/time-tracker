@@ -37,6 +37,7 @@ pub fn load_catalog(app: &AppHandle) -> Result<Option<RmCatalogCache>, String> {
         &path,
         RmCatalogCache {
             fetched_at: String::new(),
+            categories: Vec::new(),
             projects: Vec::new(),
         },
     )

@@ -2,9 +2,12 @@
   import { onMount } from "svelte";
   import EntryForm from "./EntryForm.svelte";
   import type { ActivitySuggestion } from "../lib/activitySuggestions";
+  import type { RmCatalogCache } from "../lib/rm";
 
   export let open = false;
   export let project = "";
+  export let assignableId: number | null = null;
+  export let category = "";
   export let startTime = "";
   export let endTime = "";
   export let notes = "";
@@ -13,7 +16,7 @@
   export let isLoading = false;
   export let isEditing = false;
   export let pendingSuggestion: ActivitySuggestion | null = null;
-  export let projectSuggestions: string[] = [];
+  export let catalog: RmCatalogCache | null = null;
   export let onSubmit: () => void;
   export let onClose: () => void;
 
@@ -68,6 +71,8 @@
 
     <EntryForm
       bind:project
+      bind:assignableId
+      bind:category
       bind:startTime
       bind:endTime
       bind:notes
@@ -76,7 +81,7 @@
       {isLoading}
       {isEditing}
       {pendingSuggestion}
-      {projectSuggestions}
+      {catalog}
       onSubmit={onSubmit}
       onCancel={onClose}
     />

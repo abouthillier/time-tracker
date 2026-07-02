@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CloudUpload, Layers, Pencil, Plus, Trash2 } from "@lucide/svelte";
+  import { CloudUpload, Layers, Pencil, Plus, RefreshCw, Trash2 } from "@lucide/svelte";
   import {
     entryDuration,
     formatDateLabel,
@@ -16,8 +16,10 @@
   export let totalForSelectedDay = 0;
   export let dayEntries: TimeEntry[] = [];
   export let isLoading = false;
+  export let canSyncDay = false;
   export let onOpenWorkspaces: () => void;
   export let onOpenRmSettings: () => void;
+  export let onSyncDay: () => void;
   export let onMoveDay: (days: number) => void;
   export let onJumpToToday: () => void;
   export let onAddEntry: () => void;
@@ -85,6 +87,16 @@
       <Plus />
       Add entry
     </button>
+
+    <button
+      type="button"
+      class="ghost sync-day-btn"
+      disabled={!canSyncDay}
+      on:click={onSyncDay}
+    >
+      <RefreshCw />
+      Sync day to RM
+    </button>
   </section>
 
   <section class="entries-card glass-card" aria-labelledby="entries-heading">
@@ -108,6 +120,9 @@
               <div class="transaction-body">
                 <strong class="transaction-title">{entry.project}</strong>
                 <span class="transaction-subtitle">
+                  {#if entry.category}
+                    {entry.category} ·
+                  {/if}
                   {entry.entries.length} slot{entry.entries.length === 1 ? "" : "s"}
                 </span>
               </div>
@@ -172,7 +187,7 @@
       </ul>
 
       <p class="entries-total">
-        {dayEntries.length} project{dayEntries.length === 1 ? "" : "s"} · {formatMinutes(totalForSelectedDay)} total
+        {dayEntries.length} group{dayEntries.length === 1 ? "" : "s"} · {formatMinutes(totalForSelectedDay)} total
       </p>
     {/if}
   </section>

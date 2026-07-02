@@ -7,10 +7,17 @@
     type TrackingStatus,
     type WorkspaceMapping,
   } from "../lib/activity";
+  import {
+    categoriesForCatalog,
+    findCatalogProject,
+    isCatalogReady,
+  } from "../lib/rmCatalog";
+  import type { RmCatalogCache } from "../lib/rm";
 
   export let knownWorkspaces: KnownWorkspace[] = [];
   export let mappings: WorkspaceMapping[] = [];
   export let projectSuggestions: string[] = [];
+  export let catalog: RmCatalogCache | null = null;
   export let trackingStatus: TrackingStatus | null = null;
   export let trackingSettings: TrackingSettings;
   export let onSaveMapping: (
@@ -21,17 +28,44 @@
 
   const editorOptions: EditorKind[] = ["cursor", "code", "vscodium"];
 
+  $: useRmPickers = isCatalogReady(catalog);
+
   const mappingFor = (workspaceKey: string) =>
     mappings.find((mapping) => mapping.workspaceKey === workspaceKey);
 
   const projectValue = (workspaceKey: string) =>
     mappingFor(workspaceKey)?.project ?? "";
 
+  const assignableIdValue = (workspaceKey: string) => {
+    const id = mappingFor(workspaceKey)?.assignableId;
+    return id != null ? String(id) : "";
+  };
+
+  const categoryValue = (workspaceKey: string) =>
+    mappingFor(workspaceKey)?.defaultCategory ?? "";
+
   const labelValue = (workspaceKey: string) =>
     mappingFor(workspaceKey)?.label ?? "";
 
   const ignoredValue = (workspaceKey: string) =>
     mappingFor(workspaceKey)?.ignored === true;
+
+  const categoryOptionsFor = (_workspaceKey: string) =>
+    categoriesForCatalog(catalog);
+
+  const handleProjectChange = (
+    workspaceKey: string,
+    event: Event,
+  ) => {
+    const value = (event.currentTarget as HTMLSelectElement).value;
+    const nextAssignableId = value ? Number(value) : undefined;
+    const project = findCatalogProject(catalog, nextAssignableId);
+
+    onSaveMapping(workspaceKey, {
+      assignableId: nextAssignableId,
+      project: project?.name ?? "",
+    });
+  };
 
   type IgnoreFilter = "all" | "hide-ignored" | "only-ignored";
   let ignoreFilter: IgnoreFilter = "all";
@@ -159,18 +193,56 @@
             </div>
 
             <div class="mapping-fields">
-              <label>
-                <span>Project</span>
-                <input
-                  value={projectValue(workspace.workspaceKey)}
-                  list="mapping-project-suggestions"
-                  placeholder="NGS, NCC, admin"
-                  on:change={(event) =>
-                    onSaveMapping(workspace.workspaceKey, {
-                      project: (event.currentTarget as HTMLInputElement).value,
-                    })}
-                />
-              </label>
+              {#if useRmPickers}
+                <label>
+                  <span>Project</span>
+                  <select
+                    value={assignableIdValue(workspace.workspaceKey)}
+                    on:change={(event) =>
+                      handleProjectChange(workspace.workspaceKey, event)}
+                  >
+                    <option value="">Select a project</option>
+                    {#each catalog?.projects ?? [] as rmProject (rmProject.assignableId)}
+                      <option value={String(rmProject.assignableId)}>
+                        {rmProject.name}
+                      </option>
+                    {/each}
+                  </select>
+                </label>
+
+                {#if categoryOptionsFor(workspace.workspaceKey).length > 0}
+                  <label>
+                    <span>Default category</span>
+                    <select
+                      value={categoryValue(workspace.workspaceKey)}
+                      on:change={(event) =>
+                        onSaveMapping(workspace.workspaceKey, {
+                          defaultCategory: (
+                            event.currentTarget as HTMLSelectElement
+                          ).value,
+                        })}
+                    >
+                      <option value="">Select a category</option>
+                      {#each categoryOptionsFor(workspace.workspaceKey) as categoryName}
+                        <option value={categoryName}>{categoryName}</option>
+                      {/each}
+                    </select>
+                  </label>
+                {/if}
+              {:else}
+                <label>
+                  <span>Project</span>
+                  <input
+                    value={projectValue(workspace.workspaceKey)}
+                    list="mapping-project-suggestions"
+                    placeholder="NGS, NCC, admin"
+                    on:change={(event) =>
+                      onSaveMapping(workspace.workspaceKey, {
+                        project: (event.currentTarget as HTMLInputElement).value,
+                      })}
+                  />
+                </label>
+              {/if}
 
               <label>
                 <span>Label <small>optional</small></span>
@@ -190,10 +262,12 @@
       {/if}
     {/if}
 
-    <datalist id="mapping-project-suggestions">
-      {#each projectSuggestions as suggestedProject}
-        <option value={suggestedProject}></option>
-      {/each}
-    </datalist>
+    {#if !useRmPickers}
+      <datalist id="mapping-project-suggestions">
+        {#each projectSuggestions as suggestedProject}
+          <option value={suggestedProject}></option>
+        {/each}
+      </datalist>
+    {/if}
   </div>
 </section>

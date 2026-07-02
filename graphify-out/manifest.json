@@ -8,68 +8,84 @@
     "hash": "6779ae67d91ea1f7cd4336edd1c12c31"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\App.svelte": {
-    "mtime": 1783007771.4366572,
-    "hash": "ec8899f8b116486128a01e531bc4f9f1"
+    "mtime": 1783020463.0880547,
+    "hash": "feb1107468768c9b9a4d7fbca43f200a"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\main.ts": {
     "mtime": 1782763236.4821265,
     "hash": "205501b6b50c46e655ecdb69ec57f760"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\DashboardScreen.svelte": {
-    "mtime": 1783007774.3268235,
-    "hash": "ceb7e119484f162c0e06245462f8fa27"
+    "mtime": 1783020452.930439,
+    "hash": "0d14b5cb87f7722596d246b7e5c5161c"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\EntryForm.svelte": {
-    "mtime": 1782929683.490604,
-    "hash": "54e867add0dd47938cdd5b7089441d6f"
+    "mtime": 1783012129.4942312,
+    "hash": "a7621a61634e6b8d2219e9a1d770f47d"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\EntryFormModal.svelte": {
-    "mtime": 1782929683.490604,
-    "hash": "2e9c29bc71737a456204ea396000d1cd"
+    "mtime": 1783011264.5425313,
+    "hash": "c620dddc4edaaf3146e5b42da00838c8"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\RmMigrationModal.svelte": {
+    "mtime": 1783017120.4150288,
+    "hash": "ea7f875378d25e6c9920f50dd25a7ff4"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\RmSettingsScreen.svelte": {
-    "mtime": 1783010539.5460155,
-    "hash": "bc1667631926f5a4894d337e3fe205b2"
+    "mtime": 1783021063.9817643,
+    "hash": "8ab35d6a3ec1716a71c1019de971966a"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\RmSyncModal.svelte": {
+    "mtime": 1783020429.7618713,
+    "hash": "5cef1febda6e9e971d543b8e57f91c71"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\SuggestionsPanel.svelte": {
     "mtime": 1782929683.491608,
     "hash": "9df2bdcbb515753e60c94650f9c7bd48"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\WorkspaceMappings.svelte": {
-    "mtime": 1782929683.491608,
-    "hash": "e1789a5e4bc995c1fbc082a137b487c6"
+    "mtime": 1783012071.4420598,
+    "hash": "25f8511443a114e7906315ed6d638234"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\WorkspacesScreen.svelte": {
-    "mtime": 1782929683.4921124,
-    "hash": "bcb5f6ac83cb1b7d83a2bdbf4521254d"
+    "mtime": 1783011281.4733167,
+    "hash": "c315ca2f0a490f4c91b38dab630c8d69"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\activity.ts": {
-    "mtime": 1782929683.4926128,
-    "hash": "d52de34ff60cfbd80acdc9ff2de4f992"
+    "mtime": 1783011131.9176662,
+    "hash": "45600e3d07638ea1c4961066d5251d67"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\activitySuggestions.ts": {
-    "mtime": 1782929683.4931138,
-    "hash": "7621a2807b0d80c6e9061c17808b6d00"
+    "mtime": 1783011221.5475109,
+    "hash": "29882d76151624281bdeced232023219"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\Counter.svelte": {
     "mtime": 1782390530.8500085,
     "hash": "017edcf14363a115e5588eeec8a9a0d2"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\rm.ts": {
-    "mtime": 1783010509.2141335,
-    "hash": "ed9f4c4e5c3b695e0a1593a8440accbc"
+    "mtime": 1783020870.2450778,
+    "hash": "d957c6bd4e253986566708730832c188"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\rmCatalog.ts": {
+    "mtime": 1783012361.0485423,
+    "hash": "eeb3749e47b65b69d1cb6bfe3ce3136a"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\timeEntries.ts": {
-    "mtime": 1782929683.4936152,
-    "hash": "54e9cafda072142055706bf6fe3138cc"
+    "mtime": 1783020412.4273114,
+    "hash": "cf00615e2da5c13305ae05a1ed025437"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\build.rs": {
     "mtime": 1782392628.7562735,
     "hash": "1be34a5c61c2c35365de3dab14298f0b"
   },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\entries.rs": {
+    "mtime": 1783020292.5165093,
+    "hash": "d77ee6b16bcb76d039575a917b0226bf"
+  },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\lib.rs": {
-    "mtime": 1783007735.7520893,
-    "hash": "65b575880785bf8a63b9f79864633d20"
+    "mtime": 1783020349.459208,
+    "hash": "096d594241f374f7c22fdc24663c6e36"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\main.rs": {
     "mtime": 1782392628.762398,
@@ -96,32 +112,40 @@
     "hash": "426e4a85bae2e4527912e8e11db60869"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\activity\\types.rs": {
-    "mtime": 1782929683.4876049,
-    "hash": "ec8de3c5ddc8f8d0d3ec3c48bac893b4"
+    "mtime": 1783011138.035399,
+    "hash": "e6823da341cfd100b9b44bc76eaeedca"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\activity\\workspace.rs": {
     "mtime": 1782929683.4881043,
     "hash": "babbbb2b01ed5ee91bb6f6d0a3fff340"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\catalog.rs": {
-    "mtime": 1783010504.9030335,
-    "hash": "2b4f2a04228f9351e0634e915418aecd"
+    "mtime": 1783012369.4286604,
+    "hash": "ecd804de763e2b2bf3975401799d6384"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\client.rs": {
-    "mtime": 1783010522.7536595,
-    "hash": "3b5c1428b48ea79ea6c9b6a1710fb991"
+    "mtime": 1783012132.4135861,
+    "hash": "480b262548824d7d78e9b9889026c25a"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\identity.rs": {
+    "mtime": 1783020351.7472997,
+    "hash": "5fcdad8640a440556b5733c482ed7f07"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\mod.rs": {
-    "mtime": 1783010506.4561923,
-    "hash": "7dc73289d793f21f9613843bf1185f2f"
+    "mtime": 1783020333.111845,
+    "hash": "e3d3bc7ecf32f665f0b7676dc85c20b9"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\settings.rs": {
-    "mtime": 1783007790.4435897,
-    "hash": "2f3ec9330efc4aa24f4a536c21f6e482"
+    "mtime": 1783012104.1997359,
+    "hash": "15ee00f8d563e27fe21efbc3b13e8d2d"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\sync.rs": {
+    "mtime": 1783020362.785045,
+    "hash": "0da02af576e660d8ec8e245ca90e5947"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\types.rs": {
-    "mtime": 1783010595.770129,
-    "hash": "8cc926203167f4c6aecaac136e6de608"
+    "mtime": 1783020304.4391959,
+    "hash": "d98d250299197ec117534c289f658054"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\index.html": {
     "mtime": 1782390531.0698714,

@@ -13,12 +13,69 @@ export type RmProjectCatalogEntry = {
 
 export type RmCatalogCache = {
   fetchedAt: string
+  categories?: string[]
   projects: RmProjectCatalogEntry[]
+}
+
+export type RmLinkedUser = {
+  id: number
+  email: string
+  displayName: string
+  linkedAt: string
 }
 
 export type RmSettings = {
   region: string
   catalogFetchedAt?: string
+  legacyMigrationCompletedAt?: string
+  linkedUser?: RmLinkedUser
+}
+
+export type RmUserSummary = {
+  id: number
+  email: string
+  displayName: string
+}
+
+export type RmUserCandidates = {
+  candidates: RmUserSummary[]
+}
+
+export type SyncScope = 'changed' | 'failed' | 'selected' | 'all'
+
+export type SyncDayRequest = {
+  date: string
+  dryRun: boolean
+  scope: SyncScope
+  entryIds?: string[]
+  excludeEntryIds?: string[]
+}
+
+export type SyncPreviewRow = {
+  entryId: string
+  project: string
+  category: string
+  hours: number
+  action: string
+  hash: string
+  included: boolean
+}
+
+export type SyncFailure = {
+  entryId: string
+  date: string
+  project: string
+  category: string
+  error: string
+  recoverable: boolean
+}
+
+export type SyncDayResult = {
+  succeeded: number
+  skipped: number
+  failed: SyncFailure[]
+  preview?: SyncPreviewRow[]
+  linkedUser?: RmLinkedUser
 }
 
 export type RmCatalogProgress = {
@@ -51,6 +108,9 @@ export const testRmConnection = (token?: string) =>
 
 export const loadRmSettings = () => invoke<RmSettings>('rm_load_settings')
 
+export const saveRmSettings = (settings: RmSettings) =>
+  invoke<void>('rm_save_settings', { settings })
+
 export const loadRmCatalog = () =>
   invoke<RmCatalogCache | null>('rm_load_catalog')
 
@@ -79,3 +139,28 @@ export const formatCatalogAge = (fetchedAt?: string) => {
     timeStyle: 'short',
   }).format(fetched)
 }
+
+export const findRmUserCandidates = (email: string, token?: string) =>
+  invoke<RmUserCandidates>('rm_find_user_candidates', {
+    email,
+    token: token?.trim() || null,
+  })
+
+export const linkRmUser = (
+  userId: number,
+  email: string,
+  displayName: string,
+) =>
+  invoke<RmLinkedUser>('rm_link_user', {
+    userId,
+    email,
+    displayName,
+  })
+
+export const unlinkRmUser = () => invoke<void>('rm_unlink_user')
+
+export const getRmLinkedUser = () =>
+  invoke<RmLinkedUser | null>('rm_get_linked_user')
+
+export const syncRmDay = (request: SyncDayRequest) =>
+  invoke<SyncDayResult>('rm_sync_day', { request })

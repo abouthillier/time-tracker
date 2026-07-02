@@ -8,7 +8,6 @@ use serde::de::DeserializeOwned;
 
 const BASE_URL: &str = "https://api.rm.smartsheet.com/api/v1";
 const MAX_RETRIES: u32 = 5;
-const CATEGORY_FETCH_DELAY: Duration = Duration::from_millis(100);
 
 pub struct RmClient {
     http: Client,
@@ -94,10 +93,6 @@ impl RmClient {
         }
 
         Err("Resource Management request failed after retries.".to_string())
-    }
-
-    pub fn category_fetch_delay() -> Duration {
-        CATEGORY_FETCH_DELAY
     }
 
     fn auth_headers(&self) -> Result<HeaderMap, String> {

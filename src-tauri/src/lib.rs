@@ -1,9 +1,7 @@
-use std::{fs, path::PathBuf};
-
-use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 
 mod activity;
+mod entries;
 mod rm;
 
 use activity::{
@@ -13,62 +11,22 @@ use activity::{
     start_activity_tracking, stop_activity_tracking, ActivityTracker,
 };
 
+use entries::{load_entries as load_entries_from_disk, save_entries as save_entries_to_disk, TimeEntry};
+
 use rm::{
-    rm_clear_token, rm_has_token, rm_load_catalog, rm_load_settings, rm_refresh_catalog,
-    rm_save_token, rm_test_connection,
+    rm_clear_token, rm_find_user_candidates, rm_get_linked_user, rm_has_token, rm_link_user,
+    rm_load_catalog, rm_load_settings, rm_refresh_catalog, rm_save_settings, rm_save_token,
+    rm_sync_day, rm_test_connection, rm_unlink_user,
 };
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct TimeSlot {
-    start_time: String,
-    end_time: String,
-    notes: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct TimeEntry {
-    id: String,
-    date: String,
-    project: String,
-    entries: Vec<TimeSlot>,
-}
 
 #[tauri::command]
 fn load_entries(app: AppHandle) -> Result<Vec<TimeEntry>, String> {
-    let path = entries_path(&app)?;
-
-    if !path.exists() {
-        return Ok(Vec::new());
-    }
-
-    let contents = fs::read_to_string(path).map_err(|error| error.to_string())?;
-
-    if contents.trim().is_empty() {
-        return Ok(Vec::new());
-    }
-
-    serde_json::from_str(&contents).map_err(|error| error.to_string())
+    load_entries_from_disk(&app)
 }
 
 #[tauri::command]
 fn save_entries(app: AppHandle, entries: Vec<TimeEntry>) -> Result<(), String> {
-    let path = entries_path(&app)?;
-    let contents = serde_json::to_string_pretty(&entries).map_err(|error| error.to_string())?;
-
-    fs::write(path, contents).map_err(|error| error.to_string())
-}
-
-fn entries_path(app: &AppHandle) -> Result<PathBuf, String> {
-    let app_data_dir = app
-        .path()
-        .app_data_dir()
-        .map_err(|error| error.to_string())?;
-
-    fs::create_dir_all(&app_data_dir).map_err(|error| error.to_string())?;
-
-    Ok(app_data_dir.join("entries.json"))
+    save_entries_to_disk(&app, &entries)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -112,8 +70,14 @@ pub fn run() {
             rm_has_token,
             rm_test_connection,
             rm_load_settings,
+            rm_save_settings,
             rm_load_catalog,
             rm_refresh_catalog,
+            rm_find_user_candidates,
+            rm_link_user,
+            rm_unlink_user,
+            rm_get_linked_user,
+            rm_sync_day,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -15,6 +15,8 @@ export type ActivitySegment = {
 export type WorkspaceMapping = {
   workspaceKey: string
   project: string
+  assignableId?: number
+  defaultCategory?: string
   label?: string
   ignored?: boolean
 }

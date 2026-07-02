@@ -3,21 +3,29 @@
   import { onDestroy, onMount } from "svelte";
   import {
     clearRmToken,
+    findRmUserCandidates,
     formatCatalogAge,
+    getRmLinkedUser,
     hasRmToken,
     invokeErrorMessage,
+    linkRmUser,
     listenRmCatalogProgress,
     loadRmCatalog,
     loadRmSettings,
     refreshRmCatalog,
     saveRmToken,
     testRmConnection,
+    unlinkRmUser,
     type RmCatalogCache,
     type RmCatalogProgress,
+    type RmLinkedUser,
     type RmSettings,
+    type RmUserSummary,
   } from "../lib/rm";
 
   export let onBack: () => void;
+  export let legacyKeyCount = 0;
+  export let onOpenMigration: () => void = () => {};
 
   let settings: RmSettings = { region: "us" };
   let catalog: RmCatalogCache | null = null;
@@ -32,6 +40,13 @@
   let catalogStatus = "";
   let catalogError = "";
   let progress: RmCatalogProgress | null = null;
+  let linkedUser: RmLinkedUser | null = null;
+  let identityEmail = "";
+  let identityCandidates: RmUserSummary[] = [];
+  let isFindingUser = false;
+  let isLinkingUser = false;
+  let identityStatus = "";
+  let identityError = "";
 
   let unlistenProgress: (() => void) | null = null;
 
@@ -52,15 +67,19 @@
     clearFeedback();
 
     try {
-      const [nextSettings, nextCatalog, tokenSaved] = await Promise.all([
-        loadRmSettings(),
-        loadRmCatalog(),
-        hasRmToken(),
-      ]);
+      const [nextSettings, nextCatalog, tokenSaved, nextLinkedUser] =
+        await Promise.all([
+          loadRmSettings(),
+          loadRmCatalog(),
+          hasRmToken(),
+          getRmLinkedUser(),
+        ]);
 
       settings = nextSettings;
       catalog = nextCatalog;
       hasToken = tokenSaved;
+      linkedUser = nextLinkedUser ?? nextSettings.linkedUser ?? null;
+      identityEmail = linkedUser?.email ?? identityEmail;
     } catch (loadError) {
       connectionError = invokeErrorMessage(
         loadError,
@@ -69,6 +88,22 @@
     } finally {
       isLoading = false;
     }
+  };
+
+  const ensureTokenReady = async () => {
+    if (activeToken) {
+      await saveRmToken(activeToken);
+      hasToken = true;
+      return activeToken;
+    }
+
+    if (hasToken) {
+      return undefined;
+    }
+
+    throw new Error(
+      "Enter and save an API token before linking your Resource Management user.",
+    );
   };
 
   const saveToken = async () => {
@@ -83,9 +118,17 @@
 
     try {
       await saveRmToken(activeToken);
-      hasToken = true;
+      hasToken = await hasRmToken();
+      if (!hasToken) {
+        throw new Error(
+          "Token could not be read back from Windows Credential Manager after saving.",
+        );
+      }
+
+      await testRmConnection();
       connectionStatus = "Token saved to Windows Credential Manager.";
     } catch (saveError) {
+      hasToken = false;
       connectionError = invokeErrorMessage(
         saveError,
         "Could not save API token.",
@@ -132,6 +175,92 @@
       );
     } finally {
       isTesting = false;
+    }
+  };
+
+  const findIdentityUser = async () => {
+    if (!canUseToken) {
+      identityError = "Save an API token before linking your RM user.";
+      return;
+    }
+
+    const trimmedEmail = identityEmail.trim();
+    if (!trimmedEmail) {
+      identityError = "Enter your work email.";
+      return;
+    }
+
+    isFindingUser = true;
+    identityStatus = "";
+    identityError = "";
+    identityCandidates = [];
+
+    try {
+      const token = await ensureTokenReady();
+      const response = await findRmUserCandidates(trimmedEmail, token);
+      identityCandidates = response.candidates;
+
+      if (identityCandidates.length === 1) {
+        identityStatus = "One match found. Confirm the link below.";
+      } else {
+        identityStatus = `${identityCandidates.length} matches found. Choose the correct user.`;
+      }
+    } catch (findError) {
+      identityError = invokeErrorMessage(
+        findError,
+        "Could not find a Resource Management user for that email.",
+      );
+    } finally {
+      isFindingUser = false;
+    }
+  };
+
+  const confirmLink = async (candidate: RmUserSummary) => {
+    isLinkingUser = true;
+    identityStatus = "";
+    identityError = "";
+
+    try {
+      linkedUser = await linkRmUser(
+        candidate.id,
+        candidate.email,
+        candidate.displayName,
+      );
+      settings = {
+        ...settings,
+        linkedUser,
+      };
+      identityCandidates = [];
+      identityEmail = linkedUser.email;
+      identityStatus = `Linked as ${linkedUser.displayName}.`;
+    } catch (linkError) {
+      identityError = invokeErrorMessage(
+        linkError,
+        "Could not link Resource Management user.",
+      );
+    } finally {
+      isLinkingUser = false;
+    }
+  };
+
+  const removeLinkedUser = async () => {
+    identityStatus = "";
+    identityError = "";
+
+    try {
+      await unlinkRmUser();
+      linkedUser = null;
+      settings = {
+        ...settings,
+        linkedUser: undefined,
+      };
+      identityCandidates = [];
+      identityStatus = "Resource Management user unlinked.";
+    } catch (unlinkError) {
+      identityError = invokeErrorMessage(
+        unlinkError,
+        "Could not unlink Resource Management user.",
+      );
     }
   };
 
@@ -261,6 +390,93 @@
       {/if}
     </section>
 
+    <section class="glass-card rm-panel" aria-labelledby="rm-identity-heading">
+      <div class="rm-panel-header">
+        <div>
+          <p class="eyebrow">Identity</p>
+          <h2 id="rm-identity-heading">Your RM user</h2>
+        </div>
+        {#if linkedUser}
+          <span class="rm-status-pill connected">
+            Linked as {linkedUser.displayName}
+          </span>
+        {/if}
+      </div>
+
+      <p class="muted-copy">
+        Link your work email once so sync always writes to your timesheet. An
+        org API token can access other users in RM — prefer a token scoped for
+        your own use, and unlink here before changing identity.
+      </p>
+
+      {#if linkedUser}
+        <p class="rm-identity-linked">
+          <strong>{linkedUser.displayName}</strong>
+          <span class="muted-copy">{linkedUser.email}</span>
+        </p>
+
+        <div class="rm-actions">
+          <button
+            type="button"
+            class="danger-btn"
+            disabled={isLinkingUser}
+            on:click={removeLinkedUser}
+          >
+            Unlink
+          </button>
+        </div>
+      {:else}
+        <label class="field">
+          <span class="field-label">Work email</span>
+          <input
+            type="email"
+            bind:value={identityEmail}
+            placeholder="you@company.com"
+            autocomplete="email"
+          />
+        </label>
+
+        <div class="rm-actions">
+          <button
+            type="button"
+            class="primary"
+            disabled={!canUseToken || isFindingUser || !identityEmail.trim()}
+            on:click={findIdentityUser}
+          >
+            {isFindingUser ? "Searching…" : "Find my RM user"}
+          </button>
+        </div>
+
+        {#if identityCandidates.length > 0}
+          <ul class="rm-identity-candidates">
+            {#each identityCandidates as candidate (candidate.id)}
+              <li class="rm-identity-candidate">
+                <div>
+                  <strong>{candidate.displayName}</strong>
+                  <span class="muted-copy">{candidate.email}</span>
+                </div>
+                <button
+                  type="button"
+                  disabled={isLinkingUser}
+                  on:click={() => confirmLink(candidate)}
+                >
+                  {isLinkingUser ? "Linking…" : "Confirm link"}
+                </button>
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      {/if}
+
+      {#if identityStatus}
+        <p class="rm-inline-success" role="status">{identityStatus}</p>
+      {/if}
+
+      {#if identityError}
+        <p class="rm-inline-error" role="alert">{identityError}</p>
+      {/if}
+    </section>
+
     <section class="glass-card rm-panel" aria-labelledby="rm-catalog-heading">
       <div class="rm-panel-header">
         <div>
@@ -295,6 +511,16 @@
           </span>
           {isRefreshing ? "Refreshing…" : "Refresh from RM"}
         </button>
+
+        {#if legacyKeyCount > 0}
+          <button
+            type="button"
+            class="ghost"
+            on:click={onOpenMigration}
+          >
+            Map local projects ({legacyKeyCount})
+          </button>
+        {/if}
       </div>
 
       {#if catalogStatus}
@@ -310,6 +536,21 @@
           {catalog.projects.length} projects cached locally.
         </p>
 
+        {#if (catalog.categories?.length ?? 0) > 0}
+          <p class="rm-category-preview">
+            Timesheet categories ({catalog.categories.length}):
+            {catalog.categories.slice(0, 6).join(" · ")}
+            {#if catalog.categories.length > 6}
+              · +{catalog.categories.length - 6} more
+            {/if}
+          </p>
+        {:else}
+          <p class="rm-category-preview muted-copy">
+            No timesheet categories discovered yet. Try refreshing again — we
+            probe active projects and RM time entries for category names.
+          </p>
+        {/if}
+
         <ul class="rm-project-list">
           {#each catalog.projects as project (project.assignableId)}
             <li class="rm-project-item">
@@ -319,23 +560,13 @@
                   <span class="muted-copy">{project.client}</span>
                 {/if}
               </div>
-              <p class="rm-category-preview">
-                {#if project.categories.length > 0}
-                  {project.categories.slice(0, 4).join(" · ")}
-                  {#if project.categories.length > 4}
-                    · +{project.categories.length - 4} more
-                  {/if}
-                {:else}
-                  No categories returned
-                {/if}
-              </p>
             </li>
           {/each}
         </ul>
       {:else}
         <p class="muted-copy">
-          Refresh the catalog to load RM projects and their time-entry
-          categories.
+          Refresh the catalog to load RM projects and the timesheet category list
+          used when logging time (for example 3D modeling, Admin, Animation).
         </p>
       {/if}
     </section>
@@ -437,6 +668,37 @@
     margin: 6px 0 0;
     font-size: 0.82rem;
     color: var(--text-muted);
+  }
+
+  .rm-identity-linked {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+  }
+
+  .rm-identity-candidates {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rm-identity-candidate {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid var(--bg-card-border);
+    padding-top: 10px;
+  }
+
+  .rm-identity-candidate div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   @keyframes spin {

@@ -1,5 +1,17 @@
 import { invoke } from '@tauri-apps/api/core'
 
+export type RmEntrySyncStatus = 'pending' | 'synced' | 'dirty' | 'error'
+
+export type RmEntrySync = {
+  remoteId?: number
+  lastSyncedAt?: string
+  syncedHash?: string
+  status: RmEntrySyncStatus
+  lastError?: string
+  lastErrorAt?: string
+  lastAttemptAt?: string
+}
+
 export type TimeSlot = {
   startTime: string
   endTime: string
@@ -10,7 +22,16 @@ export type TimeEntry = {
   id: string
   date: string
   project: string
+  assignableId?: number
+  category?: string
   entries: TimeSlot[]
+  rmSync?: RmEntrySync
+}
+
+export type EntryTarget = {
+  project: string
+  assignableId?: number
+  category?: string
 }
 
 export type EntryDraft = Omit<TimeEntry, 'id'>
@@ -81,6 +102,92 @@ export const slotDuration = (slot: TimeSlot) =>
 export const entryDuration = (entry: Pick<TimeEntry, 'entries'>) =>
   entry.entries.reduce((total, slot) => total + slotDuration(slot), 0)
 
+const syncNotesFromEntry = (entry: Pick<TimeEntry, 'entries'>) => {
+  const notes = entry.entries
+    .map((slot) => slot.notes?.trim())
+    .filter((note): note is string => Boolean(note))
+    .join('; ')
+
+  return [...notes].length > 256 ? [...notes].slice(0, 256).join('') : notes
+}
+
+const syncHoursFromEntry = (entry: Pick<TimeEntry, 'entries'>) => {
+  const totalMinutes = entryDuration(entry)
+  return Math.round((totalMinutes / 60) * 100) / 100
+}
+
+export const computeSyncHash = (
+  entry: Pick<TimeEntry, 'date' | 'assignableId' | 'category' | 'entries'>,
+) => {
+  const assignableId = entry.assignableId ?? 0
+  const category = entry.category ?? ''
+  const hours = syncHoursFromEntry(entry)
+  const notes = syncNotesFromEntry(entry)
+
+  return `${entry.date}|${assignableId}|${category}|${hours.toFixed(2)}|${notes}`
+}
+
+export const clearRemoteLink = (entry: TimeEntry): TimeEntry => {
+  if (!entry.rmSync) {
+    return entry
+  }
+
+  return {
+    ...entry,
+    rmSync: {
+      ...entry.rmSync,
+      remoteId: undefined,
+      syncedHash: undefined,
+      lastSyncedAt: undefined,
+      lastError: undefined,
+      lastErrorAt: undefined,
+      status: 'pending',
+    },
+  }
+}
+
+export const markEntryDirty = (entry: TimeEntry): TimeEntry => {
+  if (!entry.rmSync || entry.rmSync.status !== 'synced') {
+    return entry
+  }
+
+  if (entry.rmSync.syncedHash === computeSyncHash(entry)) {
+    return entry
+  }
+
+  return {
+    ...entry,
+    rmSync: {
+      ...entry.rmSync,
+      status: 'dirty',
+    },
+  }
+}
+
+export const prepareEntriesForSave = (
+  previousEntries: TimeEntry[],
+  nextEntries: TimeEntry[],
+) =>
+  nextEntries.map((entry) => {
+    const previous = previousEntries.find((item) => item.id === entry.id)
+    if (!previous) {
+      return entry
+    }
+
+    const identityChanged =
+      previous.date !== entry.date ||
+      previous.assignableId !== entry.assignableId ||
+      (previous.category?.trim() ?? '') !== (entry.category?.trim() ?? '')
+
+    let updated = identityChanged ? clearRemoteLink(entry) : entry
+    updated = markEntryDirty(updated)
+
+    return updated
+  })
+
+export const isRmReadyEntry = (entry: TimeEntry) =>
+  entry.assignableId != null && Boolean(entry.category?.trim())
+
 export const totalMinutesForDay = (entries: TimeEntry[], dateKey: string) =>
   entries
     .filter((entry) => entry.date === dateKey)
@@ -108,6 +215,143 @@ export const loadEntries = () => invoke<TimeEntry[]>('load_entries')
 
 export const saveEntries = (entries: TimeEntry[]) =>
   invoke<void>('save_entries', { entries })
+
+export const normalizeProject = (projectName: string) =>
+  projectName.trim().toLocaleLowerCase()
+
+export const isSameProject = (firstProject: string, secondProject: string) =>
+  normalizeProject(firstProject) === normalizeProject(secondProject)
+
+export const entryTargetKey = (target: EntryTarget) => {
+  if (target.assignableId != null) {
+    return `${target.assignableId}::${target.category?.trim() ?? ''}`
+  }
+
+  return normalizeProject(target.project)
+}
+
+export const entryMatchesTarget = (
+  entry: TimeEntry,
+  date: string,
+  target: EntryTarget,
+) => {
+  if (entry.date !== date) {
+    return false
+  }
+
+  if (entry.assignableId != null && target.assignableId != null) {
+    return (
+      entry.assignableId === target.assignableId &&
+      (entry.category?.trim() ?? '') === (target.category?.trim() ?? '')
+    )
+  }
+
+  return isSameProject(entry.project, target.project)
+}
+
+const sortSlots = (slots: TimeSlot[]) =>
+  [...slots].sort(
+    (left, right) =>
+      left.startTime.localeCompare(right.startTime) ||
+      left.endTime.localeCompare(right.endTime),
+  )
+
+export const upsertSlot = (
+  currentEntries: TimeEntry[],
+  date: string,
+  target: EntryTarget,
+  slot: TimeSlot,
+) => {
+  let didAppendSlot = false
+
+  const nextEntries = currentEntries.map((entry) => {
+    if (entryMatchesTarget(entry, date, target)) {
+      didAppendSlot = true
+
+      return {
+        ...entry,
+        project: target.project,
+        assignableId: target.assignableId,
+        category: target.category,
+        entries: sortSlots([...entry.entries, slot]),
+      }
+    }
+
+    return entry
+  })
+
+  if (didAppendSlot) {
+    return nextEntries
+  }
+
+  return [
+    ...nextEntries,
+    {
+      id: crypto.randomUUID(),
+      date,
+      project: target.project,
+      assignableId: target.assignableId,
+      category: target.category,
+      entries: [slot],
+    },
+  ]
+}
+
+export const moveEditedSlot = (
+  currentEntries: TimeEntry[],
+  slotToEdit: { entryId: string; slotIndex: number },
+  date: string,
+  target: EntryTarget,
+  slot: TimeSlot,
+) => {
+  const originalEntry = currentEntries.find(
+    (entry) => entry.id === slotToEdit.entryId,
+  )
+
+  if (
+    originalEntry &&
+    entryMatchesTarget(originalEntry, date, target)
+  ) {
+    return currentEntries.map((entry) =>
+      entry.id === slotToEdit.entryId
+        ? {
+            ...entry,
+            project: target.project,
+            assignableId: target.assignableId,
+            category: target.category,
+            entries: sortSlots(
+              entry.entries.map((existingSlot, index) =>
+                index === slotToEdit.slotIndex ? slot : existingSlot,
+              ),
+            ),
+          }
+        : entry,
+    )
+  }
+
+  return upsertSlot(
+    removeSlot(currentEntries, slotToEdit.entryId, slotToEdit.slotIndex),
+    date,
+    target,
+    slot,
+  )
+}
+
+export const removeSlot = (
+  currentEntries: TimeEntry[],
+  entryId: string,
+  slotIndex: number,
+) =>
+  currentEntries
+    .map((entry) =>
+      entry.id === entryId
+        ? {
+            ...entry,
+            entries: entry.entries.filter((_, index) => index !== slotIndex),
+          }
+        : entry,
+    )
+    .filter((entry) => entry.entries.length > 0)
 
 const timeToMinutes = (time: string) => {
   const [hours, minutes] = time.split(':').map(Number)

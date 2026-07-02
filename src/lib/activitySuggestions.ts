@@ -177,7 +177,13 @@ const buildConsolidatedSuggestion = ({
   }
 
   const workspaceKey = closedBlocks[0].workspaceKey
-  const overlapsExisting = hasOverlap(entries, dateKey, project, startTime, endTime)
+  const overlapsExisting = hasOverlap(
+    entries,
+    dateKey,
+    mapping,
+    startTime,
+    endTime,
+  )
 
   return {
     id: `${dateKey}:${workspaceKey}:consolidated`,
@@ -300,7 +306,13 @@ export const buildActivitySuggestions = ({
       const endTime = toTimeString(block.end)
       const durationMinutes = minutesBetween(startTime, endTime)
       const project = mapping?.project?.trim() || null
-      const overlapsExisting = hasOverlap(entries, dateKey, project, startTime, endTime)
+      const overlapsExisting = hasOverlap(
+    entries,
+    dateKey,
+    mapping,
+    startTime,
+    endTime,
+  )
 
       return {
         id: suggestionId,
@@ -388,20 +400,30 @@ const toTimeString = (date: Date) => {
 const hasOverlap = (
   entries: TimeEntry[],
   dateKey: string,
-  project: string | null,
+  mapping: WorkspaceMapping | undefined,
   startTime: string,
   endTime: string,
 ) => {
-  if (!project) {
+  const project = mapping?.project?.trim() || null
+  if (!project && mapping?.assignableId == null) {
     return false
   }
 
-  const normalizedProject = project.trim().toLowerCase()
-  const dayEntries = entries.filter(
-    (entry) =>
-      entry.date === dateKey &&
-      entry.project.trim().toLowerCase() === normalizedProject,
-  )
+  const dayEntries = entries.filter((entry) => {
+    if (entry.date !== dateKey) {
+      return false
+    }
+
+    if (mapping?.assignableId != null) {
+      return (
+        entry.assignableId === mapping.assignableId &&
+        (entry.category?.trim() ?? '') ===
+          (mapping.defaultCategory?.trim() ?? '')
+      )
+    }
+
+    return entry.project.trim().toLowerCase() === project!.toLowerCase()
+  })
 
   return dayEntries.some((entry) =>
     entry.entries.some((slot) => slotsOverlap(slot, startTime, endTime)),
