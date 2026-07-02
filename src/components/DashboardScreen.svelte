@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Layers, Pencil, Plus, Trash2 } from "@lucide/svelte";
+  import { CloudUpload, Layers, Pencil, Plus, Trash2 } from "@lucide/svelte";
   import {
     entryDuration,
     formatDateLabel,
@@ -17,6 +17,7 @@
   export let dayEntries: TimeEntry[] = [];
   export let isLoading = false;
   export let onOpenWorkspaces: () => void;
+  export let onOpenRmSettings: () => void;
   export let onMoveDay: (days: number) => void;
   export let onJumpToToday: () => void;
   export let onAddEntry: () => void;
@@ -32,14 +33,24 @@
 <div class="screen dashboard-screen">
   <header class="screen-header">
     <h1 id="app-title">Time Tracker</h1>
-    <button
-      type="button"
-      class="icon-btn"
-      aria-label="Open workspaces"
-      on:click={onOpenWorkspaces}
-    >
-      <Layers />
-    </button>
+    <div class="header-actions">
+      <button
+        type="button"
+        class="icon-btn"
+        aria-label="Open Resource Management settings"
+        on:click={onOpenRmSettings}
+      >
+        <CloudUpload />
+      </button>
+      <button
+        type="button"
+        class="icon-btn"
+        aria-label="Open workspaces"
+        on:click={onOpenWorkspaces}
+      >
+        <Layers />
+      </button>
+    </div>
   </header>
 
   <section class="hero-metric" aria-label="Total time for selected day">

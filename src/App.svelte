@@ -39,12 +39,13 @@
 
   import DashboardScreen from "./components/DashboardScreen.svelte";
   import EntryFormModal from "./components/EntryFormModal.svelte";
+  import RmSettingsScreen from "./components/RmSettingsScreen.svelte";
   import WorkspacesScreen from "./components/WorkspacesScreen.svelte";
 
   import { listen } from "@tauri-apps/api/event";
   import { onDestroy, onMount } from "svelte";
 
-  type ActiveScreen = "dashboard" | "workspaces";
+  type ActiveScreen = "dashboard" | "workspaces" | "rm";
 
   type EditingSlot = {
     entryId: string;
@@ -207,6 +208,14 @@
   };
 
   const closeWorkspaces = () => {
+    activeScreen = "dashboard";
+  };
+
+  const openRmSettings = () => {
+    activeScreen = "rm";
+  };
+
+  const closeRmSettings = () => {
     activeScreen = "dashboard";
   };
 
@@ -649,16 +658,14 @@
 
 <main class="app-shell">
   <div class="screen-viewport">
-    <div
-      class="screen-track"
-      class:show-workspaces={activeScreen === "workspaces"}
-    >
+    <div class="screen-track" data-screen={activeScreen}>
       <DashboardScreen
         {selectedDate}
         {totalForSelectedDay}
         {dayEntries}
         {isLoading}
         onOpenWorkspaces={openWorkspaces}
+        onOpenRmSettings={openRmSettings}
         onMoveDay={moveDay}
         onJumpToToday={jumpToToday}
         onAddEntry={openAddEntry}
@@ -687,6 +694,8 @@
         onEditSuggestion={editSuggestion}
         onDismissSuggestion={dismissSuggestion}
       />
+
+      <RmSettingsScreen onBack={closeRmSettings} />
     </div>
   </div>
 

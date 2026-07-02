@@ -5,7 +5,7 @@ mod tracker;
 mod types;
 mod workspace;
 
-pub use tracker::{ActivityTracker};
+pub use tracker::{read_json_file, write_json_file, ActivityTracker};
 pub use types::{
     ActivitySegment, EditorKind, KnownWorkspace, SuggestionStateEntry,
     TrackingSettings, TrackingStatus, WorkspaceMapping,

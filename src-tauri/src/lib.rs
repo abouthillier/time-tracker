@@ -4,12 +4,18 @@ use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 
 mod activity;
+mod rm;
 
 use activity::{
     get_tracking_status, list_known_workspaces_command, load_activity_segments,
     load_suggestion_state, load_tracking_settings, load_workspace_mappings,
     save_suggestion_state, save_tracking_settings, save_workspace_mappings,
     start_activity_tracking, stop_activity_tracking, ActivityTracker,
+};
+
+use rm::{
+    rm_clear_token, rm_has_token, rm_load_catalog, rm_load_settings, rm_refresh_catalog,
+    rm_save_token, rm_test_connection,
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -101,6 +107,13 @@ pub fn run() {
             start_activity_tracking,
             stop_activity_tracking,
             list_known_workspaces_command,
+            rm_save_token,
+            rm_clear_token,
+            rm_has_token,
+            rm_test_connection,
+            rm_load_settings,
+            rm_load_catalog,
+            rm_refresh_catalog,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
