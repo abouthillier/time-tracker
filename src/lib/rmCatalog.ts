@@ -5,6 +5,31 @@ import type { RmCatalogCache, RmProjectCatalogEntry } from './rm'
 export const isCatalogReady = (catalog: RmCatalogCache | null | undefined) =>
   Boolean(catalog && catalog.projects.length > 0)
 
+export const CATALOG_STALE_DAYS = 7
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000
+
+export const catalogAgeDays = (fetchedAt?: string) => {
+  if (!fetchedAt) {
+    return null
+  }
+
+  const fetched = new Date(fetchedAt)
+  if (Number.isNaN(fetched.getTime())) {
+    return null
+  }
+
+  return Math.floor((Date.now() - fetched.getTime()) / MS_PER_DAY)
+}
+
+export const isCatalogStale = (
+  fetchedAt?: string,
+  maxDays = CATALOG_STALE_DAYS,
+) => {
+  const ageDays = catalogAgeDays(fetchedAt)
+  return ageDays !== null && ageDays > maxDays
+}
+
 export const findCatalogProject = (
   catalog: RmCatalogCache | null | undefined,
   assignableId: number | null | undefined,

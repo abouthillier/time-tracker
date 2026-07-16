@@ -32,6 +32,23 @@
     const nextProject = findCatalogProject(catalog, assignableId);
     project = nextProject?.name ?? "";
   };
+
+  const openTimePicker = (event: MouseEvent) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const input = button.previousElementSibling as HTMLInputElement | null;
+    input?.showPicker?.();
+  };
+
+  const handleFormKeydown = (event: KeyboardEvent) => {
+    if (event.key !== "Enter" || (!event.ctrlKey && !event.shiftKey)) {
+      return;
+    }
+    event.preventDefault();
+    if (isSaving || isLoading) {
+      return;
+    }
+    (event.currentTarget as HTMLFormElement).requestSubmit();
+  };
 </script>
 
 <form
@@ -39,6 +56,7 @@
   class:from-suggestion={isCreatingFromSuggestion}
   class="entry-form"
   on:submit|preventDefault={onSubmit}
+  on:keydown={handleFormKeydown}
 >
   {#if isEditing}
     <div class="editing-banner">
@@ -59,6 +77,7 @@
     <label>
       <span>Project</span>
       <select
+        name="project"
         value={assignableId != null ? String(assignableId) : ""}
         on:change={handleProjectChange}
         required
@@ -75,17 +94,14 @@
     <label>
       <span>Category</span>
       {#if categoryOptions.length > 0}
-        <select bind:value={category} required>
+        <select name="category" bind:value={category} required>
           <option value="">Select a category</option>
           {#each categoryOptions as categoryName}
             <option value={categoryName}>{categoryName}</option>
           {/each}
         </select>
       {:else}
-        <input
-          bind:value={category}
-          placeholder="No RM categories loaded"
-        />
+        <input bind:value={category} placeholder="No RM categories loaded" />
       {/if}
     </label>
   {:else}
@@ -103,12 +119,30 @@
   <div class="time-grid">
     <label>
       <span>Start</span>
-      <input bind:value={startTime} name="startTime" type="time" />
+      <span class="time-field">
+        <input bind:value={startTime} name="startTime" type="time" />
+        <button
+          type="button"
+          class="time-picker-btn"
+          tabindex="-1"
+          aria-hidden="true"
+          on:click={openTimePicker}
+        ></button>
+      </span>
     </label>
 
     <label>
       <span>End</span>
-      <input bind:value={endTime} name="endTime" type="time" />
+      <span class="time-field">
+        <input bind:value={endTime} name="endTime" type="time" />
+        <button
+          type="button"
+          class="time-picker-btn"
+          tabindex="-1"
+          aria-hidden="true"
+          on:click={openTimePicker}
+        ></button>
+      </span>
     </label>
   </div>
 

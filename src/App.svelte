@@ -1,9 +1,11 @@
 <script lang="ts">
   import {
+    clearRemoteLink,
     earliestEntryStart,
     isRmReadyEntry,
     latestEntryEnd,
     loadEntries,
+    markEntryResolved,
     minutesBetween,
     moveEditedSlot,
     prepareEntriesForSave,
@@ -12,6 +14,7 @@
     shiftDateKey,
     todayKey,
     totalMinutesForDay,
+    updateEntryById,
     upsertSlot,
     isSameProject,
     type EntryTarget,
@@ -47,9 +50,11 @@
   import {
     getRmLinkedUser,
     hasRmToken,
+    invokeErrorMessage,
     loadRmCatalog,
     loadRmSettings,
     saveRmSettings,
+    syncRmDay,
     type RmCatalogCache,
     type RmLinkedUser,
     type RmSettings,
@@ -59,6 +64,7 @@
     collectLegacyProjectKeys,
     findCatalogProject,
     isCatalogReady,
+    isCatalogStale,
     categoriesForCatalog,
     syncEntryLabelsFromCatalog,
   } from "./lib/rmCatalog";
@@ -116,6 +122,8 @@
   let migrationOpen = false;
   let syncModalOpen = false;
   let legacyKeys: string[] = [];
+  let retryingEntryId: string | null = null;
+  let rowSyncError = "";
 
   let unlistenSegments: (() => void) | null = null;
   let pendingSuggestion: ActivitySuggestion | null = null;
@@ -143,6 +151,13 @@
     isCatalogReady(rmCatalog) &&
     Boolean(rmLinkedUser) &&
     dayEntries.some(isRmReadyEntry);
+
+  $: rmSyncEnabled =
+    rmHasToken && isCatalogReady(rmCatalog) && Boolean(rmLinkedUser);
+
+  $: catalogIsStale =
+    rmSyncEnabled &&
+    isCatalogStale(rmCatalog?.fetchedAt ?? rmSettings?.catalogFetchedAt);
 
   $: projectSuggestions = entries
     .reduce<string[]>((suggestions, entry) => {
@@ -457,6 +472,23 @@
     openEntryModal();
   };
 
+  const duplicateSlotForToday = (entry: TimeEntry, slotIndex: number) => {
+    const slot = entry.entries[slotIndex];
+    if (!slot) return;
+
+    editingSlot = null;
+    pendingSuggestion = null;
+    selectedDate = todayKey();
+    project = entry.project;
+    assignableId = entry.assignableId ?? null;
+    category = entry.category ?? "";
+    startTime = slot.startTime;
+    endTime = slot.endTime;
+    notes = slot.notes ?? "";
+    error = "";
+    openEntryModal();
+  };
+
   const resetForm = () => {
     editingSlot = null;
     pendingSuggestion = null;
@@ -520,6 +552,50 @@
   const closeSyncModal = async () => {
     syncModalOpen = false;
     await refreshRmData();
+  };
+
+  const canRowSync = (entry: TimeEntry) =>
+    rmSyncEnabled && isRmReadyEntry(entry);
+
+  const retryEntrySync = async (entry: TimeEntry) => {
+    if (!canRowSync(entry)) {
+      return;
+    }
+
+    rowSyncError = "";
+    retryingEntryId = entry.id;
+
+    try {
+      const result = await syncRmDay({
+        date: entry.date,
+        dryRun: false,
+        scope: "selected",
+        entryIds: [entry.id],
+      });
+
+      entries = await loadEntries();
+
+      if (result.failed.length > 0) {
+        rowSyncError = result.failed[0]?.error ?? "Sync failed for this row.";
+      }
+    } catch (syncError) {
+      rowSyncError = invokeErrorMessage(
+        syncError,
+        "Could not sync this entry to Resource Management.",
+      );
+    } finally {
+      retryingEntryId = null;
+    }
+  };
+
+  const resolveEntrySync = async (entry: TimeEntry) => {
+    rowSyncError = "";
+    await persist(updateEntryById(entries, entry.id, markEntryResolved));
+  };
+
+  const clearEntryRemoteLink = async (entry: TimeEntry) => {
+    rowSyncError = "";
+    await persist(updateEntryById(entries, entry.id, clearRemoteLink));
   };
 
   const applyDefaultTimes = () => {
@@ -769,6 +845,10 @@
         {dayEntries}
         {isLoading}
         {canSyncDay}
+        {rmSyncEnabled}
+        {catalogIsStale}
+        {retryingEntryId}
+        {rowSyncError}
         onOpenWorkspaces={openWorkspaces}
         onOpenRmSettings={openRmSettings}
         onSyncDay={openSyncModal}
@@ -777,7 +857,11 @@
         onAddEntry={openAddEntry}
         onAddSlotAfter={addSlotAfter}
         onEditSlot={editSlot}
+        onDuplicateSlotForToday={duplicateSlotForToday}
         onDeleteSlot={deleteSlot}
+        onRetryEntrySync={retryEntrySync}
+        onMarkEntryResolved={resolveEntrySync}
+        onClearEntryRemoteLink={clearEntryRemoteLink}
         {slotsForDisplay}
       />
 

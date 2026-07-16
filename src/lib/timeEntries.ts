@@ -188,6 +188,53 @@ export const prepareEntriesForSave = (
 export const isRmReadyEntry = (entry: TimeEntry) =>
   entry.assignableId != null && Boolean(entry.category?.trim())
 
+export const entryRmSyncStatus = (
+  entry: TimeEntry,
+): RmEntrySyncStatus | null => {
+  if (!isRmReadyEntry(entry)) {
+    return null
+  }
+
+  return entry.rmSync?.status ?? 'pending'
+}
+
+export const entrySyncStatusLabel = (status: RmEntrySyncStatus) => {
+  switch (status) {
+    case 'synced':
+      return 'Synced to Resource Management'
+    case 'dirty':
+      return 'Changed since last sync'
+    case 'error':
+      return 'Sync failed'
+    case 'pending':
+      return 'Not synced yet'
+  }
+}
+
+export const markEntryResolved = (entry: TimeEntry): TimeEntry => {
+  const existing = entry.rmSync
+
+  return {
+    ...entry,
+    rmSync: {
+      remoteId: existing?.remoteId,
+      lastSyncedAt: existing?.lastSyncedAt,
+      syncedHash: existing?.syncedHash ?? computeSyncHash(entry),
+      status: 'synced',
+      lastAttemptAt: existing?.lastAttemptAt,
+    },
+  }
+}
+
+export const updateEntryById = (
+  currentEntries: TimeEntry[],
+  entryId: string,
+  updater: (entry: TimeEntry) => TimeEntry,
+) =>
+  currentEntries.map((entry) =>
+    entry.id === entryId ? updater(entry) : entry,
+  )
+
 export const totalMinutesForDay = (entries: TimeEntry[], dateKey: string) =>
   entries
     .filter((entry) => entry.date === dateKey)
@@ -358,3 +405,79 @@ const timeToMinutes = (time: string) => {
 
   return hours * 60 + minutes
 }
+
+const minutesToTime = (totalMinutes: number) => {
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+
+  return `${`${hours}`.padStart(2, '0')}:${`${minutes}`.padStart(2, '0')}`
+}
+
+/** Display "09:45" as "9:45am". */
+export const formatClockTime = (time: string) => {
+  const totalMinutes = timeToMinutes(time)
+  const hours24 = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  const period = hours24 >= 12 ? 'pm' : 'am'
+  const hours12 = hours24 % 12 || 12
+
+  return `${hours12}:${`${minutes}`.padStart(2, '0')}${period}`
+}
+
+export type TimeGap = {
+  startTime: string
+  endTime: string
+}
+
+/**
+ * Gaps between covered intervals from the earliest slot start to the
+ * latest slot end on the given entries (overlapping slots are merged).
+ */
+export const dayEntryGaps = (entries: TimeEntry[]): TimeGap[] => {
+  const intervals = entries
+    .flatMap((entry) => entry.entries)
+    .map((slot) => ({
+      start: timeToMinutes(slot.startTime),
+      end: timeToMinutes(slot.endTime),
+    }))
+    .filter((interval) => interval.end > interval.start)
+    .sort((left, right) => left.start - right.start || left.end - right.end)
+
+  if (intervals.length < 2) {
+    return []
+  }
+
+  const merged: { start: number; end: number }[] = []
+
+  for (const interval of intervals) {
+    const last = merged[merged.length - 1]
+
+    if (!last || interval.start > last.end) {
+      merged.push({ ...interval })
+      continue
+    }
+
+    if (interval.end > last.end) {
+      last.end = interval.end
+    }
+  }
+
+  const gaps: TimeGap[] = []
+
+  for (let index = 1; index < merged.length; index += 1) {
+    const previous = merged[index - 1]
+    const next = merged[index]
+
+    if (next.start > previous.end) {
+      gaps.push({
+        startTime: minutesToTime(previous.end),
+        endTime: minutesToTime(next.start),
+      })
+    }
+  }
+
+  return gaps
+}
+
+export const formatTimeGap = (gap: TimeGap) =>
+  `${formatClockTime(gap.startTime)}-${formatClockTime(gap.endTime)}`

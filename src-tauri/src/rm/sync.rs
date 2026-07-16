@@ -342,23 +342,131 @@ fn post_entry(
     Ok(created.id)
 }
 
+fn put_update_body(payload: &EntryPayload) -> serde_json::Value {
+    serde_json::json!({
+        "hours": payload.hours,
+        "task": payload.category,
+        "notes": if payload.notes.is_empty() { serde_json::Value::Null } else { serde_json::Value::String(payload.notes.clone()) },
+    })
+}
+
 fn put_entry(
     client: &RmClient,
     linked_user_id: i64,
     remote_id: i64,
-    entry: &TimeEntry,
+    _entry: &TimeEntry,
     payload: &EntryPayload,
 ) -> Result<i64, String> {
     let path = format!("users/{linked_user_id}/time_entries/{remote_id}");
-    let body = serde_json::json!({
-        "user_id": linked_user_id,
-        "assignable_id": payload.assignable_id,
-        "date": entry.date,
-        "hours": payload.hours,
-        "task": payload.category,
-        "notes": if payload.notes.is_empty() { serde_json::Value::Null } else { serde_json::Value::String(payload.notes.clone()) },
-    });
+    // RM rejects PUT bodies that try to set identity fields (assignable_id, user_id,
+    // date) on confirmed entries — only hours/task/notes are mutable.
+    let body = put_update_body(payload);
 
     let updated: RmCreatedTimeEntry = client.request_json("PUT", &path, &[], Some(body))?;
     Ok(updated.id)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::entries::{RmEntrySync, TimeEntry, TimeSlot};
+    use super::super::types::{RmCatalogCache, RmProjectCatalogEntry, SyncScope};
+
+    fn sample_entry(status: &str, remote_id: Option<i64>, synced_hash: Option<&str>) -> TimeEntry {
+        TimeEntry {
+            id: "entry-1".to_string(),
+            date: "2026-07-01".to_string(),
+            project: "ELC 2025".to_string(),
+            assignable_id: Some(42),
+            category: Some("Admin".to_string()),
+            entries: vec![TimeSlot {
+                start_time: "09:00".to_string(),
+                end_time: "11:30".to_string(),
+                notes: Some("notes".to_string()),
+            }],
+            rm_sync: Some(RmEntrySync {
+                remote_id,
+                last_synced_at: None,
+                synced_hash: synced_hash.map(str::to_string),
+                status: status.to_string(),
+                last_error: None,
+                last_error_at: None,
+                last_attempt_at: None,
+            }),
+        }
+    }
+
+    #[test]
+    fn build_payload_aggregates_hours_and_hash() {
+        let entry = sample_entry("pending", None, None);
+        let payload = build_payload(&entry).expect("payload");
+
+        assert_eq!(payload.hours, 2.5);
+        assert_eq!(payload.category, "Admin");
+        assert_eq!(payload.notes, "notes");
+        assert_eq!(payload.hash, "2026-07-01|42|Admin|2.50|notes");
+    }
+
+    #[test]
+    fn should_attempt_changed_skips_synced_with_matching_hash() {
+        let entry = sample_entry("synced", Some(99), Some("2026-07-01|42|Admin|2.50|notes"));
+        let payload = build_payload(&entry).expect("payload");
+        let selected = std::collections::HashSet::new();
+
+        assert!(!should_attempt(
+            &entry,
+            &SyncScope::Changed,
+            &payload.hash,
+            &selected
+        ));
+    }
+
+    #[test]
+    fn should_attempt_selected_includes_explicit_entry() {
+        let entry = sample_entry("synced", Some(99), Some("old-hash"));
+        let mut selected = std::collections::HashSet::new();
+        selected.insert("entry-1".to_string());
+
+        assert!(should_attempt(&entry, &SyncScope::Selected, "any", &selected));
+    }
+
+    #[test]
+    fn validate_against_catalog_rejects_unknown_category() {
+        let entry = sample_entry("pending", None, None);
+        let payload = build_payload(&entry).expect("payload");
+        let catalog = RmCatalogCache {
+            fetched_at: "2026-07-01T00:00:00Z".to_string(),
+            categories: vec!["3D modeling".to_string()],
+            projects: vec![RmProjectCatalogEntry {
+                assignable_id: 42,
+                name: "ELC 2025".to_string(),
+                project_code: None,
+                phase_name: None,
+                parent_project_id: None,
+                client: None,
+                categories: vec![],
+            }],
+        };
+
+        let error = validate_against_catalog(&entry, &catalog, &payload).unwrap_err();
+        assert!(error.contains("Admin"));
+    }
+
+    #[test]
+    fn put_update_body_excludes_immutable_identity_fields() {
+        let body = put_update_body(&EntryPayload {
+            assignable_id: 10954953,
+            category: "Programming".to_string(),
+            hours: 2.0,
+            notes: String::new(),
+            hash: String::new(),
+        });
+
+        assert!(body.get("assignable_id").is_none());
+        assert!(body.get("user_id").is_none());
+        assert!(body.get("date").is_none());
+        assert_eq!(body["hours"], 2.0);
+        assert_eq!(body["task"], "Programming");
+    }
+}
+

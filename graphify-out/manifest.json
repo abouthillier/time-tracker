@@ -4,24 +4,28 @@
     "hash": "c75647575a823f80e9d2e5e8bfb8c8bc"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\vite.config.ts": {
-    "mtime": 1782763236.480622,
+    "mtime": 1783024338.8470528,
     "hash": "6779ae67d91ea1f7cd4336edd1c12c31"
   },
+  "C:\\Users\\alexb\\dev\\time-tracker\\vitest.config.ts": {
+    "mtime": 1783958148.2640634,
+    "hash": "b32beef381bdb0dd01fe3a20b0007061"
+  },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\App.svelte": {
-    "mtime": 1783020463.0880547,
-    "hash": "feb1107468768c9b9a4d7fbca43f200a"
+    "mtime": 1784216581.254146,
+    "hash": "15ac17044b6700920352fea5dd2395eb"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\main.ts": {
     "mtime": 1782763236.4821265,
     "hash": "205501b6b50c46e655ecdb69ec57f760"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\DashboardScreen.svelte": {
-    "mtime": 1783020452.930439,
-    "hash": "0d14b5cb87f7722596d246b7e5c5161c"
+    "mtime": 1784119977.2790613,
+    "hash": "2d66b5dc754b40b479010cc993bae510"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\EntryForm.svelte": {
-    "mtime": 1783012129.4942312,
-    "hash": "a7621a61634e6b8d2219e9a1d770f47d"
+    "mtime": 1784216581.254146,
+    "hash": "3d6db0eb7b701de807aeab0fdd6347b2"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\EntryFormModal.svelte": {
     "mtime": 1783011264.5425313,
@@ -32,12 +36,12 @@
     "hash": "ea7f875378d25e6c9920f50dd25a7ff4"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\RmSettingsScreen.svelte": {
-    "mtime": 1783021063.9817643,
-    "hash": "8ab35d6a3ec1716a71c1019de971966a"
+    "mtime": 1783958148.2640634,
+    "hash": "f06291b2abf9b846e9cdd669a24ccd88"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\RmSyncModal.svelte": {
-    "mtime": 1783020429.7618713,
-    "hash": "5cef1febda6e9e971d543b8e57f91c71"
+    "mtime": 1783022610.3784635,
+    "hash": "465690ab82906ae5d1c0169bfbd81763"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\components\\SuggestionsPanel.svelte": {
     "mtime": 1782929683.491608,
@@ -68,12 +72,20 @@
     "hash": "d957c6bd4e253986566708730832c188"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\rmCatalog.ts": {
-    "mtime": 1783012361.0485423,
-    "hash": "eeb3749e47b65b69d1cb6bfe3ce3136a"
+    "mtime": 1784216581.254146,
+    "hash": "4e4708f51be7fe349d2dde1a164711d1"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\rmSync.test.ts": {
+    "mtime": 1783958148.2645679,
+    "hash": "c2e26d8f7521f570e9118fce96fdea24"
+  },
+  "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\timeEntries.gaps.test.ts": {
+    "mtime": 1784216581.254146,
+    "hash": "abe243baf19c1492c77154ddce71c47f"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src\\lib\\timeEntries.ts": {
-    "mtime": 1783020412.4273114,
-    "hash": "cf00615e2da5c13305ae05a1ed025437"
+    "mtime": 1784216581.254146,
+    "hash": "7174dce9c3488b95c86469569e77158a"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\build.rs": {
     "mtime": 1782392628.7562735,
@@ -140,8 +152,8 @@
     "hash": "15ee00f8d563e27fe21efbc3b13e8d2d"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\sync.rs": {
-    "mtime": 1783020362.785045,
-    "hash": "0da02af576e660d8ec8e245ca90e5947"
+    "mtime": 1784216581.254146,
+    "hash": "bfd7e7b580f85c8a90469ecf51afb53f"
   },
   "C:\\Users\\alexb\\dev\\time-tracker\\src-tauri\\src\\rm\\types.rs": {
     "mtime": 1783020304.4391959,

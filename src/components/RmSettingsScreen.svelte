@@ -22,6 +22,11 @@
     type RmSettings,
     type RmUserSummary,
   } from "../lib/rm";
+  import {
+    catalogAgeDays,
+    categoriesForCatalog,
+    isCatalogStale,
+  } from "../lib/rmCatalog";
 
   export let onBack: () => void;
   export let legacyKeyCount = 0;
@@ -52,6 +57,10 @@
 
   $: activeToken = tokenInput.trim();
   $: canUseToken = hasToken || activeToken.length > 0;
+  $: catalogFetchedAt = settings.catalogFetchedAt ?? catalog?.fetchedAt;
+  $: catalogIsStale = Boolean(catalog) && isCatalogStale(catalogFetchedAt);
+  $: catalogAge = catalogAgeDays(catalogFetchedAt);
+  $: catalogCategories = categoriesForCatalog(catalog);
 
   const clearFeedback = () => {
     connectionStatus = "";
@@ -487,8 +496,15 @@
 
       <p class="muted-copy">
         Last refreshed:
-        {formatCatalogAge(settings.catalogFetchedAt ?? catalog?.fetchedAt)}
+        {formatCatalogAge(catalogFetchedAt)}
       </p>
+
+      {#if catalogIsStale}
+        <p class="rm-stale-warning" role="status">
+          Catalog is {catalogAge} days old. Refresh before syncing to pick up
+          new projects and categories.
+        </p>
+      {/if}
 
       {#if progress}
         <p class="rm-progress" aria-live="polite">
@@ -536,12 +552,12 @@
           {catalog.projects.length} projects cached locally.
         </p>
 
-        {#if (catalog.categories?.length ?? 0) > 0}
+        {#if catalogCategories.length > 0}
           <p class="rm-category-preview">
-            Timesheet categories ({catalog.categories.length}):
-            {catalog.categories.slice(0, 6).join(" · ")}
-            {#if catalog.categories.length > 6}
-              · +{catalog.categories.length - 6} more
+            Timesheet categories ({catalogCategories.length}):
+            {catalogCategories.slice(0, 6).join(" · ")}
+            {#if catalogCategories.length > 6}
+              · +{catalogCategories.length - 6} more
             {/if}
           </p>
         {:else}
@@ -668,6 +684,16 @@
     margin: 6px 0 0;
     font-size: 0.82rem;
     color: var(--text-muted);
+  }
+
+  .rm-stale-warning {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    background: rgba(251, 191, 36, 0.12);
+    color: #fcd34d;
+    font-size: 0.9rem;
   }
 
   .rm-identity-linked {
